@@ -4,8 +4,12 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import controller.login;
+
 import java.awt.Color;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 import java.awt.Image;
 import java.awt.Font;
@@ -20,6 +24,7 @@ public class ViewLogin extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
     private JPasswordField psFldPassword;
+    private login login;
 
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -35,6 +40,7 @@ public class ViewLogin extends JFrame {
     }
 
     public ViewLogin() {
+    	login = new login();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 700, 500);
         contentPane = new JPanel();
@@ -128,6 +134,23 @@ public class ViewLogin extends JFrame {
         lblRegistro.setBackground(new Color(244, 241, 222));
         lblRegistro.setBounds(426, 424, 177, 33);
         contentPane.add(lblRegistro);
+        
+        btnIngresar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String email = txtUsuario.getText();
+                String password = new String(psFldPassword.getPassword());
+
+                boolean autenticado = login.autenticar(email, password);
+
+                if (autenticado) {
+                    JOptionPane.showMessageDialog(null, "Login exitoso");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Email o contraseña incorrectos");
+                }
+            }
+        });
+
         
         lblRegistro.addMouseListener(new MouseAdapter() {
             @Override
