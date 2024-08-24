@@ -10,7 +10,6 @@ public class ConexionBD {
     private final String user = "postgres";
     private final String password = "admin";
 
-    // Método para obtener la conexión a la base de datos
     public Connection getConexion() {
         Connection conn = null;
         try {
