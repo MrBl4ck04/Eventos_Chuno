@@ -1,6 +1,6 @@
 package controller;
 
-import View.Model.ConexionBD;
+import Model.ConexionBD;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
