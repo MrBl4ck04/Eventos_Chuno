@@ -12,6 +12,10 @@ import java.awt.Font;
 import javax.swing.JTextArea;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JOptionPane;
+import controller.Registro;
 
 public class ViewRegistro extends JFrame {
 
@@ -41,10 +45,6 @@ public class ViewRegistro extends JFrame {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
         setContentPane(contentPane);
-
-        ImageIcon gifIcon = new ImageIcon("ChunoLn.gif");
-        Image img = gifIcon.getImage().getScaledInstance(343, 463, Image.SCALE_DEFAULT);
-        gifIcon = new ImageIcon(img);
         contentPane.setLayout(null);
 
         JLabel lblRegistro = new JLabel("¡Registrate!");
@@ -53,78 +53,102 @@ public class ViewRegistro extends JFrame {
         lblRegistro.setBackground(new Color(244, 241, 222));
         lblRegistro.setFont(new Font("Tw Cen MT Condensed", Font.BOLD, 26));
         contentPane.add(lblRegistro);
-        
+
         JTextArea txtNombre = new JTextArea();
         txtNombre.setBounds(431, 127, 218, 28);
         contentPane.add(txtNombre);
-        
+
         JLabel lblNombre = new JLabel("Nombre:");
         lblNombre.setBounds(353, 127, 68, 33);
         lblNombre.setForeground(new Color(244, 241, 222));
         lblNombre.setFont(new Font("Tw Cen MT Condensed", Font.BOLD, 18));
         lblNombre.setBackground(new Color(244, 241, 222));
         contentPane.add(lblNombre);
-        
+
+        JTextArea txtApellido = new JTextArea();
+        txtApellido.setBounds(431, 184, 218, 28);
+        contentPane.add(txtApellido);
+
+        JLabel lblApellido = new JLabel("Apellido:");
+        lblApellido.setBounds(353, 179, 68, 33);
+        lblApellido.setForeground(new Color(244, 241, 222));
+        lblApellido.setFont(new Font("Tw Cen MT Condensed", Font.BOLD, 18));
+        lblApellido.setBackground(new Color(244, 241, 222));
+        contentPane.add(lblApellido);
+
+        JTextArea txtEmail = new JTextArea();
+        txtEmail.setBounds(431, 237, 218, 28);
+        contentPane.add(txtEmail);
+
+        JLabel lblEmail = new JLabel("Email:");
+        lblEmail.setBounds(353, 232, 68, 33);
+        lblEmail.setForeground(new Color(244, 241, 222));
+        lblEmail.setFont(new Font("Tw Cen MT Condensed", Font.BOLD, 18));
+        lblEmail.setBackground(new Color(244, 241, 222));
+        contentPane.add(lblEmail);
+
+        pswd = new JPasswordField();
+        pswd.setBounds(440, 286, 209, 27);
+        contentPane.add(pswd);
+
+        JLabel lblContraseña = new JLabel("Contraseña:");
+        lblContraseña.setBounds(353, 286, 88, 33);
+        lblContraseña.setForeground(new Color(244, 241, 222));
+        lblContraseña.setFont(new Font("Tw Cen MT Condensed", Font.BOLD, 18));
+        lblContraseña.setBackground(new Color(244, 241, 222));
+        contentPane.add(lblContraseña);
+
+        JTextArea txtTelefono = new JTextArea();
+        txtTelefono.setBounds(431, 334, 218, 28);
+        contentPane.add(txtTelefono);
+
+        JLabel lblTelefono = new JLabel("Telefono:");
+        lblTelefono.setBounds(353, 329, 88, 33);
+        lblTelefono.setForeground(new Color(244, 241, 222));
+        lblTelefono.setFont(new Font("Tw Cen MT Condensed", Font.BOLD, 18));
+        lblTelefono.setBackground(new Color(244, 241, 222));
+        contentPane.add(lblTelefono);
+
         JButton btnRegistrar = new JButton("REGISTRAR");
         btnRegistrar.setBounds(455, 388, 130, 41);
         btnRegistrar.setFont(new Font("Tw Cen MT Condensed", Font.PLAIN, 16));
         contentPane.add(btnRegistrar);
-        
-        JLabel lblApellido = new JLabel("Apellido");
-        lblApellido.setForeground(new Color(244, 241, 222));
-        lblApellido.setFont(new Font("Tw Cen MT Condensed", Font.BOLD, 18));
-        lblApellido.setBackground(new Color(244, 241, 222));
-        lblApellido.setBounds(353, 179, 68, 33);
-        contentPane.add(lblApellido);
-        
-        JTextArea txtApellido = new JTextArea();
-        txtApellido.setBounds(431, 184, 218, 28);
-        contentPane.add(txtApellido);
-        
-        JLabel lblEmail = new JLabel("Email:");
-        lblEmail.setForeground(new Color(244, 241, 222));
-        lblEmail.setFont(new Font("Tw Cen MT Condensed", Font.BOLD, 18));
-        lblEmail.setBackground(new Color(244, 241, 222));
-        lblEmail.setBounds(353, 232, 68, 33);
-        contentPane.add(lblEmail);
-        
-        JTextArea txtEmail = new JTextArea();
-        txtEmail.setBounds(431, 237, 218, 28);
-        contentPane.add(txtEmail);
-        
-        JLabel lblContraseña = new JLabel("Contraseña:");
-        lblContraseña.setForeground(new Color(244, 241, 222));
-        lblContraseña.setFont(new Font("Tw Cen MT Condensed", Font.BOLD, 18));
-        lblContraseña.setBackground(new Color(244, 241, 222));
-        lblContraseña.setBounds(353, 286, 88, 33);
-        contentPane.add(lblContraseña);
-        
-        pswd = new JPasswordField();
-        pswd.setBounds(440, 286, 209, 27);
-        contentPane.add(pswd);
-        
-        JLabel lblTelefono = new JLabel("Telefono:");
-        lblTelefono.setForeground(new Color(244, 241, 222));
-        lblTelefono.setFont(new Font("Tw Cen MT Condensed", Font.BOLD, 18));
-        lblTelefono.setBackground(new Color(244, 241, 222));
-        lblTelefono.setBounds(353, 329, 88, 33);
-        contentPane.add(lblTelefono);
-        
-        JTextArea txtTelefono = new JTextArea();
-        txtTelefono.setBounds(431, 334, 218, 28);
-        contentPane.add(txtTelefono);
-        
+
         JPanel pnRegistro = new JPanel();
         pnRegistro.setBounds(0, 0, 327, 463);
         contentPane.add(pnRegistro);
         pnRegistro.setLayout(null);
 
-        ImageIcon iconRegistro = new ImageIcon(getClass().getResource("/View/ChunoRegistro.png")); 
+        ImageIcon iconRegistro = new ImageIcon(getClass().getResource("/View/ChunoRegistro.png"));
         Image imgRegistro = iconRegistro.getImage().getScaledInstance(pnRegistro.getWidth(), pnRegistro.getHeight(), Image.SCALE_DEFAULT);
         iconRegistro = new ImageIcon(imgRegistro);
 
         JLabel lblRegistroIcon = new JLabel(iconRegistro);
         lblRegistroIcon.setBounds(0, 0, pnRegistro.getWidth(), pnRegistro.getHeight());
         pnRegistro.add(lblRegistroIcon);
+
+        // Crear instancia de la clase Registro
+        Registro registro = new Registro();
+
+        btnRegistrar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Capturar datos del formulario
+                String nombre = txtNombre.getText();
+                String apellido = txtApellido.getText();
+                String email = txtEmail.getText();
+                String password = new String(pswd.getPassword()); // Convierte el JPasswordField a String
+                String telefono = txtTelefono.getText();
+
+                // Realizar la inserción en la base de datos (sin el campo 'rol')
+                boolean exito = registro.registrarUsuario(nombre, apellido, email, password, telefono);
+
+                if (exito) {
+                    JOptionPane.showMessageDialog(null, "Usuario registrado con éxito.");
+                    // Aquí podrías limpiar los campos o redirigir al usuario a otra ventana
+                } else {
+                    JOptionPane.showMessageDialog(null, "Error al registrar el usuario.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
     }
 }
