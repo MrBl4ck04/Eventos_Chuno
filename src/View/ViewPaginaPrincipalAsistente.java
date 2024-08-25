@@ -12,11 +12,8 @@ import javax.swing.JButton;
 import java.awt.Color;
 import java.awt.Font;
 import javax.swing.SwingConstants;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-public class ViewPaginaPrincipalOrador extends JFrame {
-
+public class ViewPaginaPrincipalAsistente extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
 
@@ -24,7 +21,7 @@ public class ViewPaginaPrincipalOrador extends JFrame {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    ViewPaginaPrincipalOrador frame = new ViewPaginaPrincipalOrador();
+                    ViewPaginaPrincipalAsistente frame = new ViewPaginaPrincipalAsistente();
                     frame.setVisible(true);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -33,16 +30,16 @@ public class ViewPaginaPrincipalOrador extends JFrame {
         });
     }
 
-    public ViewPaginaPrincipalOrador() {
+    public ViewPaginaPrincipalAsistente() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 619, 338);
+        setBounds(100, 100, 618, 339);
 
         contentPane = new BackgroundPanel("/View/Fondo.jpeg");
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        JLabel lblTitulo = new JLabel("EVENTOS CHUNO (ORADOR)");
+        JLabel lblTitulo = new JLabel("EVENTOS CHUNO (ASISTENTE)");
         lblTitulo.setFont(new Font("Lucida Sans Typewriter", Font.BOLD, 18));
         lblTitulo.setBounds(10, 6, 291, 27);
         contentPane.add(lblTitulo);
@@ -69,19 +66,19 @@ public class ViewPaginaPrincipalOrador extends JFrame {
 
         JButton btnNuevaReunion = new JButton("");
         btnNuevaReunion.setBounds(427, 107, 118, 105);
-        setButtonIcon(btnNuevaReunion, "/View/mas.png");
+        setButtonIcon(btnNuevaReunion, "/View/ingresarcon.png");
         contentPane.add(btnNuevaReunion);
 
         JLabel lblHistorial = new JLabel("Historial de Conferencias");
         lblHistorial.setFont(new Font("Dialog", Font.BOLD, 12));
         lblHistorial.setHorizontalAlignment(SwingConstants.CENTER);
-        lblHistorial.setBounds(39, 218, 152, 22);
+        lblHistorial.setBounds(50, 223, 143, 22);
         contentPane.add(lblHistorial);
 
         JLabel lblProximos = new JLabel("Próximas Conferencias");
         lblProximos.setFont(new Font("Dialog", Font.BOLD, 12));
         lblProximos.setHorizontalAlignment(SwingConstants.CENTER);
-        lblProximos.setBounds(232, 218, 152, 22);
+        lblProximos.setBounds(243, 223, 134, 22);
         contentPane.add(lblProximos);
 
         JLabel lblNuevaReunion = new JLabel("Nueva Conferencia");
@@ -89,25 +86,10 @@ public class ViewPaginaPrincipalOrador extends JFrame {
         lblNuevaReunion.setHorizontalAlignment(SwingConstants.CENTER);
         lblNuevaReunion.setBounds(427, 218, 121, 22);
         contentPane.add(lblNuevaReunion);
-
-        btnNuevaReunion.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ViewNuevaReunion view = new ViewNuevaReunion();
-                view.setVisible(true);
-            }
-        });
-        btnProximos.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ViewProximos viewp = new ViewProximos();
-                viewp.setVisible(true);
-            }
-        });
     }
 
     private void setButtonIcon(JButton button, String resourcePath) {
-        ImageIcon originalIcon = new ImageIcon(ViewPaginaPrincipalOrador.class.getResource(resourcePath));
+        ImageIcon originalIcon = new ImageIcon(ViewPaginaPrincipalAsistente.class.getResource(resourcePath));
         Image scaledImage = originalIcon.getImage().getScaledInstance(button.getWidth(), button.getHeight(), Image.SCALE_SMOOTH);
         button.setIcon(new ImageIcon(scaledImage));
         button.setBorderPainted(false);
@@ -116,12 +98,11 @@ public class ViewPaginaPrincipalOrador extends JFrame {
 }
 
 class BackgroundPanel extends JPanel {
-
     private static final long serialVersionUID = 1L;
     private Image backgroundImage;
 
     public BackgroundPanel(String fileName) {
-        backgroundImage = new ImageIcon(ViewPaginaPrincipalOrador.class.getResource(fileName)).getImage();
+        backgroundImage = new ImageIcon(ViewPaginaPrincipalAsistente.class.getResource(fileName)).getImage();
     }
 
     @Override
