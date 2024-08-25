@@ -152,18 +152,3 @@ public class ViewPaginaPrincipalOrador extends JFrame {
     }
 }
 
-class BackgroundPanel extends JPanel {
-
-    private static final long serialVersionUID = 1L;
-    private Image backgroundImage;
-
-    public BackgroundPanel(String fileName) {
-        backgroundImage = new ImageIcon(ViewPaginaPrincipalOrador.class.getResource(fileName)).getImage();
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
-    }
-}
