@@ -4,10 +4,12 @@ import java.awt.EventQueue;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Dimension;
 import java.util.Calendar;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
@@ -15,6 +17,10 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.BoxLayout;
+import javax.swing.JFileChooser;
+import javax.swing.JDialog;
+import javax.swing.JScrollPane;
 
 public class ViewNuevaReunion extends JFrame {
 
@@ -23,6 +29,9 @@ public class ViewNuevaReunion extends JFrame {
     private JTextField txtTitulo;
     private JTextField txtTema;
     private JTextField txtMarca;
+    private JTextField txtSesion;
+    private String imagenPath;
+    private String recursosPathOrUrl;
 
     /**
      * Launch the application.
@@ -45,142 +54,166 @@ public class ViewNuevaReunion extends JFrame {
      */
     public ViewNuevaReunion() {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setBounds(100, 100, 516, 386);
+        setBounds(100, 100, 400, 400); // Hacer la ventana más compacta
         contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        contentPane.setBorder(new EmptyBorder(10, 10, 10, 10)); // Añadir margen al contenido
+        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS)); // Usar BoxLayout para organizar los elementos
         setContentPane(contentPane);
-        GridBagLayout gbl_contentPane = new GridBagLayout();
-        gbl_contentPane.columnWidths = new int[]{0, 0, 0, 0};
-        gbl_contentPane.rowHeights = new int[]{0, 0, 0, 0, 0, 0, 0, 0};
-        gbl_contentPane.columnWeights = new double[]{0.0, 1.0, 0.0, Double.MIN_VALUE};
-        gbl_contentPane.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE};
-        contentPane.setLayout(gbl_contentPane);
         
+        JPanel panelTitulo = new JPanel();
+        panelTitulo.setLayout(new BoxLayout(panelTitulo, BoxLayout.X_AXIS));
         JLabel lblTitulo = new JLabel("Título:");
-        GridBagConstraints gbc_lblTitulo = new GridBagConstraints();
-        gbc_lblTitulo.anchor = GridBagConstraints.EAST;
-        gbc_lblTitulo.insets = new Insets(0, 0, 5, 5);
-        gbc_lblTitulo.gridx = 0;
-        gbc_lblTitulo.gridy = 0;
-        contentPane.add(lblTitulo, gbc_lblTitulo);
-        
+        lblTitulo.setPreferredSize(new Dimension(80, 30)); // Tamaño fijo para etiquetas
         txtTitulo = new JTextField();
-        GridBagConstraints gbc_txtTitulo = new GridBagConstraints();
-        gbc_txtTitulo.insets = new Insets(0, 0, 5, 5);
-        gbc_txtTitulo.fill = GridBagConstraints.HORIZONTAL;
-        gbc_txtTitulo.gridx = 1;
-        gbc_txtTitulo.gridy = 0;
-        contentPane.add(txtTitulo, gbc_txtTitulo);
-        txtTitulo.setColumns(10);
+        panelTitulo.add(lblTitulo);
+        panelTitulo.add(txtTitulo);
+        contentPane.add(panelTitulo);
         
-        JLabel lblDescripcion = new JLabel("Descripción:");
-        GridBagConstraints gbc_lblDescripcion = new GridBagConstraints();
-        gbc_lblDescripcion.anchor = GridBagConstraints.NORTH;
-        gbc_lblDescripcion.insets = new Insets(0, 0, 5, 5);
-        gbc_lblDescripcion.gridx = 0;
-        gbc_lblDescripcion.gridy = 1;
-        contentPane.add(lblDescripcion, gbc_lblDescripcion);
+        JPanel panelDescripcion = new JPanel();
+        panelDescripcion.setLayout(new BoxLayout(panelDescripcion, BoxLayout.Y_AXIS));
+        panelDescripcion.setBorder(BorderFactory.createTitledBorder("Descripción"));
+        JTextArea txtDescripcion = new JTextArea(3, 20);
+        JScrollPane scrollDescripcion = new JScrollPane(txtDescripcion);
+        panelDescripcion.add(scrollDescripcion);
+        contentPane.add(panelDescripcion);
         
-        JTextArea txtDescripcion = new JTextArea();
-        GridBagConstraints gbc_txtDescripcion = new GridBagConstraints();
-        gbc_txtDescripcion.insets = new Insets(0, 0, 5, 5);
-        gbc_txtDescripcion.fill = GridBagConstraints.BOTH;
-        gbc_txtDescripcion.gridx = 1;
-        gbc_txtDescripcion.gridy = 1;
-        gbc_txtDescripcion.gridwidth = 2;
-        gbc_txtDescripcion.gridheight = 3;
-        contentPane.add(txtDescripcion, gbc_txtDescripcion);
-        
-        JLabel lblFechaInicio = new JLabel("Fecha Inicio:");
-        GridBagConstraints gbc_lblFechaInicio = new GridBagConstraints();
-        gbc_lblFechaInicio.anchor = GridBagConstraints.EAST;
-        gbc_lblFechaInicio.insets = new Insets(0, 0, 5, 5);
-        gbc_lblFechaInicio.gridx = 0;
-        gbc_lblFechaInicio.gridy = 4;
-        contentPane.add(lblFechaInicio, gbc_lblFechaInicio);
+        JPanel panelFechas = new JPanel();
+        panelFechas.setLayout(new BoxLayout(panelFechas, BoxLayout.Y_AXIS));
+        panelFechas.setBorder(BorderFactory.createTitledBorder("Fechas"));
         
         JPanel panelFechaInicio = new JPanel();
-        GridBagConstraints gbc_panelFechaInicio = new GridBagConstraints();
-        gbc_panelFechaInicio.insets = new Insets(0, 0, 5, 5);
-        gbc_panelFechaInicio.fill = GridBagConstraints.HORIZONTAL;
-        gbc_panelFechaInicio.gridx = 1;
-        gbc_panelFechaInicio.gridy = 4;
-        contentPane.add(panelFechaInicio, gbc_panelFechaInicio);
-        
+        panelFechaInicio.setLayout(new BoxLayout(panelFechaInicio, BoxLayout.X_AXIS));
+        JLabel lblFechaInicio = new JLabel("Fecha Inicio:");
+        lblFechaInicio.setPreferredSize(new Dimension(80, 30));
         JSpinner spinnerDiaInicio = new JSpinner(new SpinnerNumberModel(1, 1, 31, 1));
-        panelFechaInicio.add(spinnerDiaInicio);
-        
         JComboBox<String> comboMesInicio = new JComboBox<>(new String[]{"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
                                                                         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"});
-        panelFechaInicio.add(comboMesInicio);
-        
         JSpinner spinnerAnoInicio = new JSpinner(new SpinnerNumberModel(Calendar.getInstance().get(Calendar.YEAR), 1900, 2100, 1));
+        panelFechaInicio.add(lblFechaInicio);
+        panelFechaInicio.add(spinnerDiaInicio);
+        panelFechaInicio.add(comboMesInicio);
         panelFechaInicio.add(spinnerAnoInicio);
-        
-        JLabel lblFechaFin = new JLabel("Fecha Fin:");
-        GridBagConstraints gbc_lblFechaFin = new GridBagConstraints();
-        gbc_lblFechaFin.anchor = GridBagConstraints.EAST;
-        gbc_lblFechaFin.insets = new Insets(0, 0, 5, 5);
-        gbc_lblFechaFin.gridx = 0;
-        gbc_lblFechaFin.gridy = 5;
-        contentPane.add(lblFechaFin, gbc_lblFechaFin);
+        panelFechas.add(panelFechaInicio);
         
         JPanel panelFechaFin = new JPanel();
-        GridBagConstraints gbc_panelFechaFin = new GridBagConstraints();
-        gbc_panelFechaFin.insets = new Insets(0, 0, 5, 5);
-        gbc_panelFechaFin.fill = GridBagConstraints.HORIZONTAL;
-        gbc_panelFechaFin.gridx = 1;
-        gbc_panelFechaFin.gridy = 5;
-        contentPane.add(panelFechaFin, gbc_panelFechaFin);
-        
+        panelFechaFin.setLayout(new BoxLayout(panelFechaFin, BoxLayout.X_AXIS));
+        JLabel lblFechaFin = new JLabel("Fecha Fin:");
+        lblFechaFin.setPreferredSize(new Dimension(80, 30));
         JSpinner spinnerDiaFin = new JSpinner(new SpinnerNumberModel(1, 1, 31, 1));
-        panelFechaFin.add(spinnerDiaFin);
-        
         JComboBox<String> comboMesFin = new JComboBox<>(new String[]{"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
                                                                      "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"});
-        panelFechaFin.add(comboMesFin);
-        
         JSpinner spinnerAnoFin = new JSpinner(new SpinnerNumberModel(Calendar.getInstance().get(Calendar.YEAR), 1900, 2100, 1));
+        panelFechaFin.add(lblFechaFin);
+        panelFechaFin.add(spinnerDiaFin);
+        panelFechaFin.add(comboMesFin);
         panelFechaFin.add(spinnerAnoFin);
+        panelFechas.add(panelFechaFin);
         
+        contentPane.add(panelFechas);
+        
+        JPanel panelTema = new JPanel();
+        panelTema.setLayout(new BoxLayout(panelTema, BoxLayout.X_AXIS));
         JLabel lblTema = new JLabel("Tema:");
-        GridBagConstraints gbc_lblTema = new GridBagConstraints();
-        gbc_lblTema.anchor = GridBagConstraints.EAST;
-        gbc_lblTema.insets = new Insets(0, 0, 5, 5);
-        gbc_lblTema.gridx = 0;
-        gbc_lblTema.gridy = 6;
-        contentPane.add(lblTema, gbc_lblTema);
-        
+        lblTema.setPreferredSize(new Dimension(80, 30));
         txtTema = new JTextField();
-        GridBagConstraints gbc_txtTema = new GridBagConstraints();
-        gbc_txtTema.insets = new Insets(0, 0, 5, 5);
-        gbc_txtTema.fill = GridBagConstraints.HORIZONTAL;
-        gbc_txtTema.gridx = 1;
-        gbc_txtTema.gridy = 6;
-        contentPane.add(txtTema, gbc_txtTema);
-        txtTema.setColumns(10);
+        panelTema.add(lblTema);
+        panelTema.add(txtTema);
+        contentPane.add(panelTema);
         
+        JPanel panelMarca = new JPanel();
+        panelMarca.setLayout(new BoxLayout(panelMarca, BoxLayout.X_AXIS));
         JLabel lblMarca = new JLabel("Marca:");
-        GridBagConstraints gbc_lblMarca = new GridBagConstraints();
-        gbc_lblMarca.anchor = GridBagConstraints.EAST;
-        gbc_lblMarca.insets = new Insets(0, 0, 0, 5);
-        gbc_lblMarca.gridx = 0;
-        gbc_lblMarca.gridy = 7;
-        contentPane.add(lblMarca, gbc_lblMarca);
-        
+        lblMarca.setPreferredSize(new Dimension(80, 30));
         txtMarca = new JTextField();
-        GridBagConstraints gbc_txtMarca = new GridBagConstraints();
-        gbc_txtMarca.insets = new Insets(0, 0, 0, 5);
-        gbc_txtMarca.fill = GridBagConstraints.HORIZONTAL;
-        gbc_txtMarca.gridx = 1;
-        gbc_txtMarca.gridy = 7;
-        contentPane.add(txtMarca, gbc_txtMarca);
-        txtMarca.setColumns(10);
+        panelMarca.add(lblMarca);
+        panelMarca.add(txtMarca);
+        contentPane.add(panelMarca);
+
+        JPanel panelSesion = new JPanel();
+        panelSesion.setLayout(new BoxLayout(panelSesion, BoxLayout.X_AXIS));
+        JLabel lblSesion = new JLabel("Sesión:");
+        lblSesion.setPreferredSize(new Dimension(80, 30));
+        txtSesion = new JTextField();
+        panelSesion.add(lblSesion);
+        panelSesion.add(txtSesion);
+        contentPane.add(panelSesion);
         
+        JPanel panelImagen = new JPanel();
+        panelImagen.setLayout(new BoxLayout(panelImagen, BoxLayout.X_AXIS));
+        JButton btnImagen = new JButton("Subir Imagen");
+        btnImagen.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            int result = fileChooser.showOpenDialog(this);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                imagenPath = fileChooser.getSelectedFile().getAbsolutePath();
+                // Aquí podrías hacer algo con la imagen, como mostrarla en la interfaz, etc.
+            }
+        });
+        panelImagen.add(btnImagen);
+        contentPane.add(panelImagen);
+
+        JPanel panelRecursos = new JPanel();
+        panelRecursos.setLayout(new BoxLayout(panelRecursos, BoxLayout.X_AXIS));
+        JButton btnRecursos = new JButton("Subir Recursos");
+        btnRecursos.addActionListener(e -> {
+            JDialog recursosDialog = new JDialog(this, "Seleccionar Recursos", true);
+            recursosDialog.setBounds(100, 100, 400, 150);
+            recursosDialog.setLayout(new GridBagLayout());
+            
+            JLabel lblUrl = new JLabel("URL:");
+            GridBagConstraints gbc_lblUrl = new GridBagConstraints();
+            gbc_lblUrl.anchor = GridBagConstraints.EAST;
+            gbc_lblUrl.insets = new Insets(10, 10, 5, 5);
+            gbc_lblUrl.gridx = 0;
+            gbc_lblUrl.gridy = 0;
+            recursosDialog.add(lblUrl, gbc_lblUrl);
+            
+            JTextField txtUrl = new JTextField();
+            GridBagConstraints gbc_txtUrl = new GridBagConstraints();
+            gbc_txtUrl.insets = new Insets(10, 5, 5, 5);
+            gbc_txtUrl.fill = GridBagConstraints.HORIZONTAL;
+            gbc_txtUrl.gridx = 1;
+            gbc_txtUrl.gridy = 0;
+            recursosDialog.add(txtUrl, gbc_txtUrl);
+            txtUrl.setColumns(20);
+            
+            JButton btnSubirArchivo = new JButton("Subir Archivo");
+            btnSubirArchivo.addActionListener(ae -> {
+                JFileChooser fileChooser = new JFileChooser();
+                int result = fileChooser.showOpenDialog(recursosDialog);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    recursosPathOrUrl = fileChooser.getSelectedFile().getAbsolutePath();
+                    txtUrl.setText(recursosPathOrUrl);
+                }
+            });
+            GridBagConstraints gbc_btnSubirArchivo = new GridBagConstraints();
+            gbc_btnSubirArchivo.insets = new Insets(10, 5, 5, 5);
+            gbc_btnSubirArchivo.gridx = 2;
+            gbc_btnSubirArchivo.gridy = 0;
+            recursosDialog.add(btnSubirArchivo, gbc_btnSubirArchivo);
+            
+            JButton btnAceptar = new JButton("Aceptar");
+            btnAceptar.addActionListener(ae -> {
+                if (!txtUrl.getText().trim().isEmpty()) {
+                    recursosPathOrUrl = txtUrl.getText().trim();
+                }
+                recursosDialog.dispose();
+            });
+            GridBagConstraints gbc_btnAceptar = new GridBagConstraints();
+            gbc_btnAceptar.insets = new Insets(10, 5, 5, 5);
+            gbc_btnAceptar.gridx = 1;
+            gbc_btnAceptar.gridy = 1;
+            recursosDialog.add(btnAceptar, gbc_btnAceptar);
+            
+            recursosDialog.setVisible(true);
+        });
+        panelRecursos.add(btnRecursos);
+        contentPane.add(panelRecursos);
+        
+        JPanel panelGuardar = new JPanel();
+        panelGuardar.setLayout(new BoxLayout(panelGuardar, BoxLayout.X_AXIS));
         JButton btnGuardar = new JButton("Guardar Conferencia");
-        GridBagConstraints gbc_btnGuardar = new GridBagConstraints();
-        gbc_btnGuardar.gridx = 2;
-        gbc_btnGuardar.gridy = 8;
-        contentPane.add(btnGuardar, gbc_btnGuardar);
+        panelGuardar.add(btnGuardar);
+        contentPane.add(panelGuardar);
     }
 }
