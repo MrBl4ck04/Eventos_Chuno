@@ -115,6 +115,7 @@ public class ViewPaginaPrincipalAsistente extends JFrame {
         button.setIcon(new ImageIcon(scaledImage));
         button.setBorderPainted(false);
         button.setFocusPainted(false);
+        button.setContentAreaFilled(false);
     }
 
     private void resizeComponents() {

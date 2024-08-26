@@ -126,6 +126,22 @@ public class ViewRegistro extends JFrame {
         JLabel lblRegistroIcon = new JLabel(iconRegistro);
         lblRegistroIcon.setBounds(0, 0, pnRegistro.getWidth(), pnRegistro.getHeight());
         pnRegistro.add(lblRegistroIcon);
+        
+        JButton btnAtras = new JButton("");
+        btnAtras.setBackground(Color.WHITE);
+        btnAtras.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		ViewLogin br3 = new ViewLogin();
+                br3.setVisible(true);
+        	}
+        });
+        btnAtras.setBorderPainted(false);
+        btnAtras.setFocusPainted(false);
+        btnAtras.setContentAreaFilled(false);
+        
+        btnAtras.setIcon(new ImageIcon(ViewRegistro.class.getResource("/View/anterior (1).png")));
+        btnAtras.setBounds(612, 11, 62, 50);
+        contentPane.add(btnAtras);
 
         // Crear instancia de la clase Registro
         Registro registro = new Registro();

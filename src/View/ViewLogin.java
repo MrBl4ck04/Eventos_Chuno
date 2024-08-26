@@ -144,7 +144,8 @@ public class ViewLogin extends JFrame {
                 boolean autenticado = login.autenticar(email, password);
 
                 if (autenticado) {
-                    JOptionPane.showMessageDialog(null, "Login exitoso");
+                    ViewRoles br = new ViewRoles();
+                    br.setVisible(true);
                 } else {
                     JOptionPane.showMessageDialog(null, "Email o contraseña incorrectos");
                 }
