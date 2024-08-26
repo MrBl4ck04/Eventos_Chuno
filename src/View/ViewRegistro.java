@@ -17,6 +17,11 @@ import java.util.regex.Pattern;
 import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
 import controller.Registro;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 public class ViewRegistro extends JFrame {
 
@@ -56,7 +61,8 @@ public class ViewRegistro extends JFrame {
         contentPane.add(lblRegistro);
 
         JTextArea txtNombre = new JTextArea();
-        txtNombre.setBounds(431, 127, 218, 28);
+        txtNombre.setBackground(new Color(244, 241, 222));
+        txtNombre.setBounds(440, 127, 209, 28);
         contentPane.add(txtNombre);
 
         JLabel lblNombre = new JLabel("Nombre:");
@@ -67,7 +73,8 @@ public class ViewRegistro extends JFrame {
         contentPane.add(lblNombre);
 
         JTextArea txtApellido = new JTextArea();
-        txtApellido.setBounds(431, 184, 218, 28);
+        txtApellido.setBackground(new Color(244, 241, 222));
+        txtApellido.setBounds(440, 184, 209, 28);
         contentPane.add(txtApellido);
 
         JLabel lblApellido = new JLabel("Apellido:");
@@ -78,7 +85,8 @@ public class ViewRegistro extends JFrame {
         contentPane.add(lblApellido);
 
         JTextArea txtEmail = new JTextArea();
-        txtEmail.setBounds(431, 237, 218, 28);
+        txtEmail.setBackground(new Color(244, 241, 222));
+        txtEmail.setBounds(440, 237, 209, 28);
         contentPane.add(txtEmail);
 
         JLabel lblEmail = new JLabel("Email:");
@@ -89,6 +97,7 @@ public class ViewRegistro extends JFrame {
         contentPane.add(lblEmail);
 
         pswd = new JPasswordField();
+        pswd.setBackground(new Color(244, 241, 222));
         pswd.setBounds(440, 286, 209, 27);
         contentPane.add(pswd);
 
@@ -100,7 +109,8 @@ public class ViewRegistro extends JFrame {
         contentPane.add(lblContraseña);
 
         JTextArea txtTelefono = new JTextArea();
-        txtTelefono.setBounds(431, 334, 218, 28);
+        txtTelefono.setBackground(new Color(244, 241, 222));
+        txtTelefono.setBounds(440, 334, 209, 28);
         contentPane.add(txtTelefono);
 
         JLabel lblTelefono = new JLabel("Telefono:");
@@ -110,8 +120,20 @@ public class ViewRegistro extends JFrame {
         lblTelefono.setBackground(new Color(244, 241, 222));
         contentPane.add(lblTelefono);
 
-        JButton btnRegistrar = new JButton("REGISTRAR");
-        btnRegistrar.setBounds(455, 388, 130, 41);
+        JButton btnRegistrar = new JButton("");
+        btnRegistrar.setBackground(Color.WHITE);
+        btnRegistrar.setBorderPainted(false);
+        btnRegistrar.setFocusPainted(false);
+        btnRegistrar.setContentAreaFilled(false);
+
+        try {
+            ImageIcon icono = loadTransparentIcon("/View/comprobar.png", 79, 73);
+            btnRegistrar.setIcon(new ImageIcon(ViewRegistro.class.getResource("/View/comprobar.png")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        btnRegistrar.setBounds(504, 380, 79, 73);
         btnRegistrar.setFont(new Font("Tw Cen MT Condensed", Font.PLAIN, 16));
         contentPane.add(btnRegistrar);
 
@@ -194,5 +216,17 @@ public class ViewRegistro extends JFrame {
         }
 
         return true;
+    }
+
+    private ImageIcon loadTransparentIcon(String path, int width, int height) throws IOException {
+        BufferedImage originalImage = ImageIO.read(getClass().getResource(path));
+        BufferedImage transparentImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = transparentImage.createGraphics();
+
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.drawImage(originalImage, 0, 0, width, height, null);
+        g2d.dispose();
+
+        return new ImageIcon(transparentImage);
     }
 }
