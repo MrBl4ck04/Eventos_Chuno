@@ -1,8 +1,9 @@
 package View;
 
+import controller.agregar;
 import java.awt.EventQueue;
-import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Dimension;
 import java.util.Calendar;
@@ -21,6 +22,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
+import java.sql.Timestamp;
 
 public class ViewNuevaReunion extends JFrame {
 
@@ -30,40 +32,27 @@ public class ViewNuevaReunion extends JFrame {
     private JTextField txtTema;
     private JTextField txtMarca;
     private JTextField txtSesion;
-    private String imagenPath;
-    private String recursosPathOrUrl;
+    private String imagen;
+    private String recursos;
+    private int usuarioId;
 
-    /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    ViewNuevaReunion frame = new ViewNuevaReunion();
-                    frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
 
-    /**
-     * Create the frame.
-     */
-    public ViewNuevaReunion() {
+    public ViewNuevaReunion(int usuarioId) {
+    	
+    	this.usuarioId = usuarioId;
+    	
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setBounds(100, 100, 400, 400); // Hacer la ventana más compacta
+        setBounds(100, 100, 400, 400);
+        
         contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(10, 10, 10, 10)); // Añadir margen al contenido
-        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS)); // Usar BoxLayout para organizar los elementos
+        contentPane.setBorder(new EmptyBorder(10, 10, 10, 10));
+        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
         setContentPane(contentPane);
         
         JPanel panelTitulo = new JPanel();
         panelTitulo.setLayout(new BoxLayout(panelTitulo, BoxLayout.X_AXIS));
         JLabel lblTitulo = new JLabel("Título:");
-        lblTitulo.setPreferredSize(new Dimension(80, 30)); // Tamaño fijo para etiquetas
+        lblTitulo.setPreferredSize(new Dimension(80, 30));
         txtTitulo = new JTextField();
         panelTitulo.add(lblTitulo);
         panelTitulo.add(txtTitulo);
@@ -145,8 +134,7 @@ public class ViewNuevaReunion extends JFrame {
             JFileChooser fileChooser = new JFileChooser();
             int result = fileChooser.showOpenDialog(this);
             if (result == JFileChooser.APPROVE_OPTION) {
-                imagenPath = fileChooser.getSelectedFile().getAbsolutePath();
-                // Aquí podrías hacer algo con la imagen, como mostrarla en la interfaz, etc.
+                imagen = fileChooser.getSelectedFile().getAbsolutePath();
             }
         });
         panelImagen.add(btnImagen);
@@ -182,8 +170,8 @@ public class ViewNuevaReunion extends JFrame {
                 JFileChooser fileChooser = new JFileChooser();
                 int result = fileChooser.showOpenDialog(recursosDialog);
                 if (result == JFileChooser.APPROVE_OPTION) {
-                    recursosPathOrUrl = fileChooser.getSelectedFile().getAbsolutePath();
-                    txtUrl.setText(recursosPathOrUrl);
+                    recursos = fileChooser.getSelectedFile().getAbsolutePath();
+                    txtUrl.setText(recursos);
                 }
             });
             GridBagConstraints gbc_btnSubirArchivo = new GridBagConstraints();
@@ -195,7 +183,7 @@ public class ViewNuevaReunion extends JFrame {
             JButton btnAceptar = new JButton("Aceptar");
             btnAceptar.addActionListener(ae -> {
                 if (!txtUrl.getText().trim().isEmpty()) {
-                    recursosPathOrUrl = txtUrl.getText().trim();
+                    recursos = txtUrl.getText().trim();
                 }
                 recursosDialog.dispose();
             });
@@ -213,7 +201,47 @@ public class ViewNuevaReunion extends JFrame {
         JPanel panelGuardar = new JPanel();
         panelGuardar.setLayout(new BoxLayout(panelGuardar, BoxLayout.X_AXIS));
         JButton btnGuardar = new JButton("Guardar Conferencia");
+        btnGuardar.addActionListener(e -> guardarConferencia());
         panelGuardar.add(btnGuardar);
         contentPane.add(panelGuardar);
+    }
+
+    /**
+     * Método para guardar la conferencia en la base de datos.
+     */
+    private void guardarConferencia() {
+        try {
+        	 String titulo = txtTitulo.getText();
+             String descripcion = ((JTextArea)((JScrollPane)((JPanel)contentPane.getComponent(1)).getComponent(0)).getViewport().getView()).getText();
+             int diaInicio = (Integer)((JSpinner)((JPanel)((JPanel)contentPane.getComponent(2)).getComponent(0)).getComponent(1)).getValue();
+             int mesInicio = ((JComboBox<String>)((JPanel)((JPanel)contentPane.getComponent(2)).getComponent(0)).getComponent(2)).getSelectedIndex();
+             int anoInicio = (Integer)((JSpinner)((JPanel)((JPanel)contentPane.getComponent(2)).getComponent(0)).getComponent(3)).getValue();
+             int diaFin = (Integer)((JSpinner)((JPanel)((JPanel)contentPane.getComponent(2)).getComponent(1)).getComponent(1)).getValue();
+             int mesFin = ((JComboBox<String>)((JPanel)((JPanel)contentPane.getComponent(2)).getComponent(1)).getComponent(2)).getSelectedIndex();
+             int anoFin = (Integer)((JSpinner)((JPanel)((JPanel)contentPane.getComponent(2)).getComponent(1)).getComponent(3)).getValue();
+             String tema = txtTema.getText();
+             String marca = txtMarca.getText();
+             
+             // Convierte las fechas a Timestamp
+             Calendar calInicio = Calendar.getInstance();
+             calInicio.set(anoInicio, mesInicio, diaInicio);
+             Timestamp fechaInicio = new Timestamp(calInicio.getTimeInMillis());
+
+             Calendar calFin = Calendar.getInstance();
+             calFin.set(anoFin, mesFin, diaFin);
+             Timestamp fechaFin = new Timestamp(calFin.getTimeInMillis());
+
+             // Llama al método para agregar la conferencia en la base de datos
+             agregar agregarConferencia = new agregar();
+             boolean exito = agregarConferencia.agregarConferencia(titulo, descripcion, fechaInicio, fechaFin, tema, marca, recursos, imagen, usuarioId);
+
+            if (exito) {
+                System.out.println("Conferencia guardada con éxito.");
+            } else {
+                System.out.println("Error al guardar la conferencia.");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

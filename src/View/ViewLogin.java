@@ -141,11 +141,12 @@ public class ViewLogin extends JFrame {
                 String email = txtUsuario.getText();
                 String password = new String(psFldPassword.getPassword());
 
-                boolean autenticado = login.autenticar(email, password);
+                int idUsuario = login.autenticar(email, password);
 
-                if (autenticado) {
-                    ViewRoles br = new ViewRoles();
+                if (idUsuario != -1) {
+                    ViewRoles br = new ViewRoles(idUsuario);  // Pasar el id_usuario a ViewRoles
                     br.setVisible(true);
+                    dispose();  // Cierra la ventana actual si el login es exitoso
                 } else {
                     JOptionPane.showMessageDialog(null, "Email o contraseña incorrectos");
                 }

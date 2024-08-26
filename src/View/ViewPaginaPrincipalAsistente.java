@@ -29,21 +29,10 @@ public class ViewPaginaPrincipalAsistente extends JFrame {
     private JLabel lblHistorial;
     private JLabel lblProximos;
     private JLabel lblNuevaReunion;
+    private int idUsuario;
 
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    ViewPaginaPrincipalAsistente frame = new ViewPaginaPrincipalAsistente();
-                    frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
-    public ViewPaginaPrincipalAsistente() {
+    public ViewPaginaPrincipalAsistente(int idUsuario) {
+    	this.idUsuario = idUsuario;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 618, 339);
 

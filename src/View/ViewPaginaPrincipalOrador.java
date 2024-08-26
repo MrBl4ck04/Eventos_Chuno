@@ -30,21 +30,10 @@ public class ViewPaginaPrincipalOrador extends JFrame {
     private JLabel lblHistorial;
     private JLabel lblProximos;
     private JLabel lblNuevaReunion;
+    private int idUsuario;
 
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    ViewPaginaPrincipalOrador frame = new ViewPaginaPrincipalOrador();
-                    frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
-    public ViewPaginaPrincipalOrador() {
+    public ViewPaginaPrincipalOrador(int idUsuario) {
+    	this.idUsuario = idUsuario;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 619, 338);
 
@@ -104,7 +93,7 @@ public class ViewPaginaPrincipalOrador extends JFrame {
         btnNuevaReunion.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ViewNuevaReunion view = new ViewNuevaReunion();
+                ViewNuevaReunion view = new ViewNuevaReunion(idUsuario);
                 view.setVisible(true);
             }
         });

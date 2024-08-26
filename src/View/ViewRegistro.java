@@ -13,6 +13,7 @@ import javax.swing.JTextArea;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.util.regex.Pattern;
 import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
 import controller.Registro;
@@ -130,15 +131,15 @@ public class ViewRegistro extends JFrame {
         JButton btnAtras = new JButton("");
         btnAtras.setBackground(Color.WHITE);
         btnAtras.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		ViewLogin br3 = new ViewLogin();
+            public void actionPerformed(ActionEvent e) {
+                ViewLogin br3 = new ViewLogin();
                 br3.setVisible(true);
-        	}
+                dispose(); // Cierra la ventana actual
+            }
         });
         btnAtras.setBorderPainted(false);
         btnAtras.setFocusPainted(false);
         btnAtras.setContentAreaFilled(false);
-        
         btnAtras.setIcon(new ImageIcon(ViewRegistro.class.getResource("/View/anterior (1).png")));
         btnAtras.setBounds(612, 11, 62, 50);
         contentPane.add(btnAtras);
@@ -155,7 +156,19 @@ public class ViewRegistro extends JFrame {
                 String password = new String(pswd.getPassword()); // Convierte el JPasswordField a String
                 String telefono = txtTelefono.getText();
 
-                // Realizar la inserción en la base de datos (sin el campo 'rol')
+                // Validación: Verificar si algún campo está vacío
+                if (nombre.isEmpty() || apellido.isEmpty() || email.isEmpty() || password.isEmpty() || telefono.isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Debe llenar todos los campos por favor.", "Error", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                // Validación: Verificar las restricciones de la contraseña
+                if (!validarContraseña(password)) {
+                    JOptionPane.showMessageDialog(null, "La contraseña debe tener al menos 8 caracteres y contener al menos un número.", "Error", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                // Realizar la inserción en la base de datos
                 boolean exito = registro.registrarUsuario(nombre, apellido, email, password, telefono);
 
                 if (exito) {
@@ -166,5 +179,20 @@ public class ViewRegistro extends JFrame {
                 }
             }
         });
+    }
+
+    // Método para validar la contraseña
+    private boolean validarContraseña(String password) {
+        // Verificar que la contraseña tenga al menos 8 caracteres
+        if (password.length() < 8) {
+            return false;
+        }
+        
+        // Verificar que contenga al menos un número
+        if (!Pattern.compile("[0-9]").matcher(password).find()) {
+            return false;
+        }
+
+        return true;
     }
 }

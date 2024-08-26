@@ -17,27 +17,10 @@ public class ViewRoles extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private int idUsuario;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					ViewRoles frame = new ViewRoles();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
-
-	/**
-	 * Create the frame.
-	 */
-	public ViewRoles() {
+    public ViewRoles(int idUsuario) {  // Constructor que recibe el id_usuario
+        this.idUsuario = idUsuario;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 196, 217);
 		contentPane = new JPanel();
@@ -52,23 +35,23 @@ public class ViewRoles extends JFrame {
 		
 		JButton btnAsistente = new JButton("Asistente");
 		btnAsistente.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				ViewPaginaPrincipalAsistente br1 = new ViewPaginaPrincipalAsistente();
+            public void actionPerformed(ActionEvent e) {
+                ViewPaginaPrincipalAsistente br1 = new ViewPaginaPrincipalAsistente(idUsuario);  // Pasar el id_usuario
                 br1.setVisible(true);
-			}
-		});
+            }
+        });
 		btnAsistente.setBounds(32, 52, 125, 52);
 		contentPane.add(btnAsistente);
 		
 		JLabel lblNewLabel = new JLabel("Con que rol desea ingresar?");
 		lblNewLabel.setBounds(10, 11, 170, 30);
 		contentPane.add(lblNewLabel);
-		 btnOrador.addMouseListener(new MouseAdapter() {
-	            @Override
-	            public void mouseClicked(MouseEvent e) {	             
-	            		ViewPaginaPrincipalOrador br = new ViewPaginaPrincipalOrador();
-	                    br.setVisible(true);	              
-	            }
-	        });
+		btnOrador.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {                 
+                ViewPaginaPrincipalOrador br = new ViewPaginaPrincipalOrador(idUsuario);  // Pasar el id_usuario
+                br.setVisible(true);                  
+            }
+        });
 	}
 }
