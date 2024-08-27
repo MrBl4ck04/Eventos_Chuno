@@ -22,6 +22,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JFileChooser;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
+import javax.swing.JOptionPane;
 import java.sql.Timestamp;
 
 public class ViewNuevaReunion extends JFrame {
@@ -35,7 +36,6 @@ public class ViewNuevaReunion extends JFrame {
     private String imagen;
     private String recursos;
     private int usuarioId;
-
 
     public ViewNuevaReunion(int usuarioId) {
     	
@@ -211,17 +211,24 @@ public class ViewNuevaReunion extends JFrame {
      */
     private void guardarConferencia() {
         try {
-        	 String titulo = txtTitulo.getText();
-             String descripcion = ((JTextArea)((JScrollPane)((JPanel)contentPane.getComponent(1)).getComponent(0)).getViewport().getView()).getText();
+             String titulo = txtTitulo.getText().trim();
+             String descripcion = ((JTextArea)((JScrollPane)((JPanel)contentPane.getComponent(1)).getComponent(0)).getViewport().getView()).getText().trim();
              int diaInicio = (Integer)((JSpinner)((JPanel)((JPanel)contentPane.getComponent(2)).getComponent(0)).getComponent(1)).getValue();
              int mesInicio = ((JComboBox<String>)((JPanel)((JPanel)contentPane.getComponent(2)).getComponent(0)).getComponent(2)).getSelectedIndex();
              int anoInicio = (Integer)((JSpinner)((JPanel)((JPanel)contentPane.getComponent(2)).getComponent(0)).getComponent(3)).getValue();
              int diaFin = (Integer)((JSpinner)((JPanel)((JPanel)contentPane.getComponent(2)).getComponent(1)).getComponent(1)).getValue();
              int mesFin = ((JComboBox<String>)((JPanel)((JPanel)contentPane.getComponent(2)).getComponent(1)).getComponent(2)).getSelectedIndex();
              int anoFin = (Integer)((JSpinner)((JPanel)((JPanel)contentPane.getComponent(2)).getComponent(1)).getComponent(3)).getValue();
-             String tema = txtTema.getText();
-             String marca = txtMarca.getText();
+             String tema = txtTema.getText().trim();
+             String marca = txtMarca.getText().trim();
              
+             // Validación de campos vacíos
+             if (titulo.isEmpty() || descripcion.isEmpty() || tema.isEmpty() || marca.isEmpty() || 
+                 imagen == null || imagen.isEmpty() || recursos == null || recursos.isEmpty()) {
+                 JOptionPane.showMessageDialog(this, "Todos los campos son obligatorios de llenar", "Error", JOptionPane.ERROR_MESSAGE);
+                 return;
+             }
+
              // Convierte las fechas a Timestamp
              Calendar calInicio = Calendar.getInstance();
              calInicio.set(anoInicio, mesInicio, diaInicio);
@@ -236,12 +243,13 @@ public class ViewNuevaReunion extends JFrame {
              boolean exito = agregarConferencia.agregarConferencia(titulo, descripcion, fechaInicio, fechaFin, tema, marca, recursos, imagen, usuarioId);
 
             if (exito) {
-                System.out.println("Conferencia guardada con éxito.");
+                JOptionPane.showMessageDialog(this, "Conferencia guardada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                System.out.println("Error al guardar la conferencia.");
+                JOptionPane.showMessageDialog(this, "Error al guardar la conferencia.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         } catch (Exception e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Ocurrió un error al guardar la conferencia.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
