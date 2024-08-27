@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.Color;
 
 public class ViewPaginaPrincipalAsistente extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -32,62 +33,84 @@ public class ViewPaginaPrincipalAsistente extends JFrame {
     private int idUsuario;
 
     public ViewPaginaPrincipalAsistente(int idUsuario) {
-    	this.idUsuario = idUsuario;
+        this.idUsuario = idUsuario;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 618, 339);
+        setBounds(100, 100, 661, 432);
 
-        contentPane = new BackgroundPanel("/View/Fondo.jpeg");
+        contentPane = new BackgroundPanel("/View/backInicio.gif");
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        JLabel lblTitulo = new JLabel("EVENTOS CHUNO (ASISTENTE)");
-        lblTitulo.setFont(new Font("Lucida Sans Typewriter", Font.BOLD, 18));
+        JLabel lblTitulo = new JLabel("Bienvenido usuario estas como:");
+        lblTitulo.setForeground(new Color(255, 255, 255));
+        lblTitulo.setFont(new Font("Tw Cen MT Condensed", Font.BOLD, 18));
         lblTitulo.setBounds(10, 6, 291, 27);
         contentPane.add(lblTitulo);
 
         btnNotificacion = new JButton("");
-        btnNotificacion.setBounds(479, 6, 44, 41);
+        btnNotificacion.setBounds(539, 6, 44, 41);
         setButtonIcon(btnNotificacion, "/View/notificacion.png");
         contentPane.add(btnNotificacion);
 
         btnUsuario = new JButton("");
-        btnUsuario.setBounds(533, 6, 44, 41);
+        btnUsuario.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        	}
+        });
+        btnUsuario.setFocusable(false);
+        btnUsuario.setFocusTraversalKeysEnabled(false);
+        btnUsuario.setFocusPainted(false);
+        btnUsuario.setContentAreaFilled(false); // Sin fondo
+        btnUsuario.setBorderPainted(false); // Sin borde
+        btnUsuario.setIcon(new ImageIcon(ViewPaginaPrincipalAsistente.class.getResource("/View/usuario (1).png")));
+        btnUsuario.setBounds(593, 6, 44, 41);
         setButtonIcon(btnUsuario, "/View/usuarioPrincipal.png");
         contentPane.add(btnUsuario);
 
         btnHistorial = new JButton("");
-        btnHistorial.setBounds(57, 107, 118, 105);
+        btnHistorial.setIcon(new ImageIcon(ViewPaginaPrincipalAsistente.class.getResource("/View/lista-de-verificacion.png")));
+        btnHistorial.setBounds(57, 92, 134, 120);
         setButtonIcon(btnHistorial, "/View/expediente.png");
         contentPane.add(btnHistorial);
 
         btnProximos = new JButton("");
-        btnProximos.setBounds(247, 107, 118, 105);
+        btnProximos.setIcon(new ImageIcon(ViewPaginaPrincipalAsistente.class.getResource("/View/calendario.png")));
+        btnProximos.setBounds(234, 91, 143, 127);
         setButtonIcon(btnProximos, "/View/mas-reciente.png");
         contentPane.add(btnProximos);
 
         btnNuevaReunion = new JButton("");
-        btnNuevaReunion.setBounds(427, 107, 118, 105);
+        btnNuevaReunion.setForeground(new Color(255, 255, 255));
+        btnNuevaReunion.setBackground(new Color(255, 255, 255));
+        btnNuevaReunion.setIcon(new ImageIcon(ViewPaginaPrincipalAsistente.class.getResource("/View/agregar-archivo.png")));
+        btnNuevaReunion.setBounds(424, 91, 118, 127);
         setButtonIcon(btnNuevaReunion, "/View/ingresarcon.png");
         contentPane.add(btnNuevaReunion);
 
         lblHistorial = new JLabel("Historial de Conferencias");
-        lblHistorial.setFont(new Font("Dialog", Font.BOLD, 12));
+        lblHistorial.setFont(new Font("Tw Cen MT Condensed", Font.BOLD, 15));
         lblHistorial.setHorizontalAlignment(SwingConstants.CENTER);
         lblHistorial.setBounds(50, 223, 143, 22);
         contentPane.add(lblHistorial);
 
         lblProximos = new JLabel("Próximas Conferencias");
-        lblProximos.setFont(new Font("Dialog", Font.BOLD, 12));
+        lblProximos.setFont(new Font("Tw Cen MT Condensed", Font.BOLD, 15));
         lblProximos.setHorizontalAlignment(SwingConstants.CENTER);
         lblProximos.setBounds(243, 223, 134, 22);
         contentPane.add(lblProximos);
 
         lblNuevaReunion = new JLabel("Nueva Conferencia");
-        lblNuevaReunion.setFont(new Font("Dialog", Font.BOLD, 12));
+        lblNuevaReunion.setFont(new Font("Tw Cen MT Condensed", Font.BOLD, 15));
         lblNuevaReunion.setHorizontalAlignment(SwingConstants.CENTER);
-        lblNuevaReunion.setBounds(427, 218, 121, 22);
+        lblNuevaReunion.setBounds(424, 223, 121, 22);
         contentPane.add(lblNuevaReunion);
+        
+        JLabel lblAsistente = new JLabel("ASISTENTE");
+        lblAsistente.setForeground(Color.WHITE);
+        lblAsistente.setFont(new Font("Tw Cen MT Condensed", Font.BOLD, 30));
+        lblAsistente.setBounds(243, 22, 144, 27);
+        contentPane.add(lblAsistente);
 
         // Añadir ComponentListener para ajustar los componentes al cambiar el tamaño
         addComponentListener(new ComponentAdapter() {
