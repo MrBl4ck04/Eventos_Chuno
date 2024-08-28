@@ -23,6 +23,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JOptionPane;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.sql.Connection;
 import java.sql.Timestamp;
 
 public class ViewNuevaReunion extends JFrame {
@@ -33,16 +36,18 @@ public class ViewNuevaReunion extends JFrame {
     private JTextField txtTema;
     private JTextField txtMarca;
     private JTextField txtSesion;
+    private JTextField txtSesiones;
     private String imagen;
     private String recursos;
     private int usuarioId;
+    private Connection connection;
 
     public ViewNuevaReunion(int usuarioId) {
     	
     	this.usuarioId = usuarioId;
     	
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        setBounds(100, 100, 400, 400);
+        setBounds(100, 100, 400, 450);
         
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -118,14 +123,25 @@ public class ViewNuevaReunion extends JFrame {
         panelMarca.add(txtMarca);
         contentPane.add(panelMarca);
 
-        JPanel panelSesion = new JPanel();
-        panelSesion.setLayout(new BoxLayout(panelSesion, BoxLayout.X_AXIS));
-        JLabel lblSesion = new JLabel("Sesión:");
-        lblSesion.setPreferredSize(new Dimension(80, 30));
-        txtSesion = new JTextField();
-        panelSesion.add(lblSesion);
-        panelSesion.add(txtSesion);
-        contentPane.add(panelSesion);
+        JPanel panelSesiones = new JPanel();
+        panelSesiones.setLayout(new BoxLayout(panelSesiones, BoxLayout.X_AXIS));
+        JLabel lblSesiones = new JLabel("Sesiones:");
+        lblSesiones.setPreferredSize(new Dimension(80, 30));
+        txtSesiones = new JTextField("0");  
+        panelSesiones.add(lblSesiones);
+        panelSesiones.add(txtSesiones);
+        contentPane.add(panelSesiones);
+
+        // Restringir el campo txtSesiones para que solo acepte números
+        txtSesiones.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                if (!Character.isDigit(c)) {
+                    e.consume(); // Ignora la entrada si no es un número
+                }
+            }
+        });
         
         JPanel panelImagen = new JPanel();
         panelImagen.setLayout(new BoxLayout(panelImagen, BoxLayout.X_AXIS));
@@ -206,9 +222,7 @@ public class ViewNuevaReunion extends JFrame {
         contentPane.add(panelGuardar);
     }
 
-    /**
-     * Método para guardar la conferencia en la base de datos.
-     */
+
     private void guardarConferencia() {
         try {
              String titulo = txtTitulo.getText().trim();
@@ -221,6 +235,7 @@ public class ViewNuevaReunion extends JFrame {
              int anoFin = (Integer)((JSpinner)((JPanel)((JPanel)contentPane.getComponent(2)).getComponent(1)).getComponent(3)).getValue();
              String tema = txtTema.getText().trim();
              String marca = txtMarca.getText().trim();
+             String sesiones = txtSesiones.getText().trim();
              
              // Validación de campos vacíos
              if (titulo.isEmpty() || descripcion.isEmpty() || tema.isEmpty() || marca.isEmpty() || 
@@ -229,7 +244,6 @@ public class ViewNuevaReunion extends JFrame {
                  return;
              }
 
-             // Convierte las fechas a Timestamp
              Calendar calInicio = Calendar.getInstance();
              calInicio.set(anoInicio, mesInicio, diaInicio);
              Timestamp fechaInicio = new Timestamp(calInicio.getTimeInMillis());
@@ -238,15 +252,34 @@ public class ViewNuevaReunion extends JFrame {
              calFin.set(anoFin, mesFin, diaFin);
              Timestamp fechaFin = new Timestamp(calFin.getTimeInMillis());
 
-             // Llama al método para agregar la conferencia en la base de datos
-             agregar agregarConferencia = new agregar();
-             boolean exito = agregarConferencia.agregarConferencia(titulo, descripcion, fechaInicio, fechaFin, tema, marca, recursos, imagen, usuarioId);
 
-            if (exito) {
-                JOptionPane.showMessageDialog(this, "Conferencia guardada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, "Error al guardar la conferencia.", "Error", JOptionPane.ERROR_MESSAGE);
-            }
+             if (Integer.parseInt(sesiones) == 0 && !fechaInicio.equals(fechaFin)) {
+                 int opcion = JOptionPane.showConfirmDialog(this, 
+                     "La cantidad de sesiones es 0, pero la fecha de fin es distinta a la fecha de inicio. " +
+                     "¿Desea cambiar la fecha de fin para que coincida con la fecha de inicio?",
+                     "Advertencia", JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+                 
+                 if (opcion == JOptionPane.OK_OPTION) {
+                     fechaFin = fechaInicio;
+                 } else {
+                     JOptionPane.showMessageDialog(this, "Por favor, corrija las fechas para continuar.", "Error", JOptionPane.ERROR_MESSAGE);
+                     return;
+                 }
+             }
+
+             if (Integer.parseInt(sesiones) > 0) {
+                 ViewSesiones viewSesiones = new ViewSesiones(connection, titulo, descripcion, fechaInicio, fechaFin, tema, marca, recursos, imagen, usuarioId);
+                 viewSesiones.setVisible(true);
+             } else {
+                 agregar agregarConferencia = new agregar();
+                 int idConferencia = agregarConferencia.agregarConferencia(titulo, descripcion, fechaInicio, fechaFin, tema, marca, recursos, imagen, usuarioId);
+
+                 if (idConferencia > 0) {                     
+                	 JOptionPane.showMessageDialog(this, "Conferencia guardada con éxito.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+                 } else {
+                     JOptionPane.showMessageDialog(this, "Error al guardar la conferencia.", "Error", JOptionPane.ERROR_MESSAGE);
+                 }
+             }
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Ocurrió un error al guardar la conferencia.", "Error", JOptionPane.ERROR_MESSAGE);
