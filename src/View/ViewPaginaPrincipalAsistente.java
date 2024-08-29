@@ -17,6 +17,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.Color;
 
+
 public class ViewPaginaPrincipalAsistente extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
@@ -117,6 +118,15 @@ public class ViewPaginaPrincipalAsistente extends JFrame {
             @Override
             public void componentResized(ComponentEvent e) {
                 resizeComponents();
+            }
+        });
+
+        // Acción para abrir la ventana de "Nueva Conferencia"
+        btnNuevaReunion.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ViewNuevaConferencia nuevaConferencia = new ViewNuevaConferencia(idUsuario);
+                nuevaConferencia.setVisible(true);
+                dispose(); // Cierra la ventana actual
             }
         });
     }
