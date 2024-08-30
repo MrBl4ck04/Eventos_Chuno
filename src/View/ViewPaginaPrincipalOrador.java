@@ -71,6 +71,13 @@ public class ViewPaginaPrincipalOrador extends JFrame {
         contentPane.add(btnUsuario);
 
         btnHistorial = new JButton("");
+        btnHistorial.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+          		ViewHistorialOrador brh = new ViewHistorialOrador();
+                brh.setVisible(true);
+                dispose(); // Cierra la ventana actual
+        	}
+        });
         btnHistorial.setIcon(new ImageIcon(ViewPaginaPrincipalOrador.class.getResource("/View/lista-de-verificacion.png")));
         btnHistorial.setBounds(50, 92, 134, 120);
         setButtonIcon(btnHistorial, "/View/expediente.png");
