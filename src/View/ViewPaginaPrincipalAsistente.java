@@ -15,6 +15,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.Color;
 
 
@@ -94,6 +96,14 @@ public class ViewPaginaPrincipalAsistente extends JFrame {
         lblHistorial.setHorizontalAlignment(SwingConstants.CENTER);
         lblHistorial.setBounds(50, 223, 143, 22);
         contentPane.add(lblHistorial);
+        lblHistorial.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                ViewHistorialAsistente historialAsistente = new ViewHistorialAsistente(idUsuario);
+                historialAsistente.setVisible(true);
+                dispose(); // Cierra la ventana actual
+            }
+        });
 
         lblProximos = new JLabel("Próximas Conferencias");
         lblProximos.setFont(new Font("Tw Cen MT Condensed", Font.BOLD, 15));

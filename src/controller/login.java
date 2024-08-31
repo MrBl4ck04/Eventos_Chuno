@@ -9,9 +9,11 @@ import java.sql.SQLException;
 public class login {
 
     private ConexionBD conexion;
+    private int idUsuario; // Variable para guardar el id_usuario
 
     public login() {
         conexion = new ConexionBD();
+        idUsuario = -1; // Inicializa con -1 para indicar que no se ha autenticado
     }
 
     public int autenticar(String email, String password) {
@@ -28,14 +30,17 @@ public class login {
             rs = pst.executeQuery();
 
             if (rs.next()) {
-                return rs.getInt("id_usuario");
+                idUsuario = rs.getInt("id_usuario");
+                return idUsuario; // Retorna el id_usuario si la autenticación es exitosa
             } else {
-                return -1; // Retorna -1 si no se encuentra el usuario
+                idUsuario = -1; // Restablece a -1 si no se encuentra el usuario
+                return -1;
             }
 
         } catch (SQLException e) {
             System.err.println("Error al autenticar usuario: " + e.getMessage());
-            return -1; // Retorna -1 en caso de error
+            idUsuario = -1;
+            return -1;
         } finally {
             try {
                 if (rs != null) rs.close();
@@ -45,5 +50,10 @@ public class login {
                 System.err.println("Error al cerrar conexión: " + e.getMessage());
             }
         }
+    }
+
+    // Método para obtener el idUsuario guardado
+    public int getIdUsuario() {
+        return idUsuario;
     }
 }
