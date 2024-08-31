@@ -5,10 +5,7 @@ import Model.ConferenciaDAO;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 public class ViewNuevaConferencia extends JFrame {
@@ -21,59 +18,50 @@ public class ViewNuevaConferencia extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 800, 600);
         contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS)); // Organizar las tarjetas en vertical
+
+        // Crear el panel con imagen de fondo
+        contentPane = new BackgroundPanel("/View/backNuevaC.png");
+        contentPane.setBorder(new EmptyBorder(70, 5, 5, 5));
+        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
         setContentPane(contentPane);
 
-        // Obtener conferencias desde la base de datos
+        contentPane.add(Box.createRigidArea(new Dimension(0, 20)));
+
         ConferenciaDAO conferenciaDAO = new ConferenciaDAO();
         List<Conferencia> conferencias = conferenciaDAO.obtenerConferencias();
 
-        // Crear tarjetas para cada conferencia
         for (Conferencia conferencia : conferencias) {
             JPanel card = createCard(conferencia);
             contentPane.add(card);
-            contentPane.add(Box.createRigidArea(new Dimension(0, 10))); // Espacio entre tarjetas
+            contentPane.add(Box.createRigidArea(new Dimension(0, 10)));
         }
 
         JButton btnVolver = new JButton("Volver");
         btnVolver.addActionListener(e -> {
             ViewPaginaPrincipalAsistente mainView = new ViewPaginaPrincipalAsistente(idUsuario);
             mainView.setVisible(true);
-            dispose(); // Cierra la ventana actual
+            dispose();
         });
         contentPane.add(btnVolver);
     }
 
     private JPanel createCard(Conferencia conferencia) {
         JPanel card = new JPanel();
-        card.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Borde de la tarjeta
+        card.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         card.setLayout(new BorderLayout());
 
-        // Etiqueta para el título de la conferencia
         JLabel lblTitulo = new JLabel(conferencia.getTitulo());
         lblTitulo.setFont(new Font("Arial", Font.BOLD, 16));
         card.add(lblTitulo, BorderLayout.NORTH);
 
-        // Panel para los botones
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 
-        // Botón de Información
         JButton btnInfo = new JButton("Información");
-        btnInfo.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                mostrarInformacionConferencia(conferencia);
-            }
-        });
+        btnInfo.addActionListener(e -> mostrarInformacionConferencia(conferencia));
 
-        // Botón de Unirse
         JButton btnUnirse = new JButton("Unirse");
-        btnUnirse.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                unirseConferencia(conferencia.getIdConferencia());
-            }
-        });
+        btnUnirse.addActionListener(e -> unirseConferencia(conferencia.getIdConferencia()));
 
         buttonPanel.add(btnInfo);
         buttonPanel.add(btnUnirse);
@@ -83,25 +71,46 @@ public class ViewNuevaConferencia extends JFrame {
         return card;
     }
 
-    // Método para mostrar la información de la conferencia en un cuadro de diálogo
     private void mostrarInformacionConferencia(Conferencia conferencia) {
-        StringBuilder info = new StringBuilder();
-        info.append("Título: ").append(conferencia.getTitulo()).append("\n");
-        info.append("Descripción: ").append(conferencia.getDescripcion()).append("\n");
-        info.append("Fecha de Inicio: ").append(conferencia.getFechaInicio()).append("\n");
-        info.append("Fecha de Fin: ").append(conferencia.getFechaFin()).append("\n");
-        info.append("Tema: ").append(conferencia.getTema()).append("\n");
-        info.append("Marca: ").append(conferencia.getMarca()).append("\n");
-        info.append("ID de Usuario: ").append(conferencia.getIdUsuario()).append("\n");
-        info.append("Recursos: ").append(conferencia.getRecursos()).append("\n");
-        info.append("ID de Sala: ").append(conferencia.getIdSala()).append("\n");
-        info.append("Disponibilidad: ").append(conferencia.getDisponibilidad() == 1 ? "Disponible" : "No disponible").append("\n");
-        info.append("Cupos: ").append(conferencia.getCupos()).append("\n");
+        JPanel infoPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);            }
+        };
+        infoPanel.setOpaque(false);
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
 
-        JOptionPane.showMessageDialog(this, info.toString(), "Información de la Conferencia", JOptionPane.INFORMATION_MESSAGE);
+        JPanel textPanel = new JPanel();
+        textPanel.setOpaque(true);
+        textPanel.setBackground(new Color(255, 255, 255, 180)); // Semi-transparent white
+        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
+        textPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        Font customFont = new Font("Tw Cen MT Condensed", Font.PLAIN, 10);
+        textPanel.add(createInfoLabel("Título: ", conferencia.getTitulo()));
+        textPanel.add(createInfoLabel("Descripción: ", conferencia.getDescripcion()));
+        textPanel.add(createInfoLabel("Fecha de Inicio: ", conferencia.getFechaInicio().toString()));
+        textPanel.add(createInfoLabel("Fecha de Fin: ", conferencia.getFechaFin().toString()));
+        textPanel.add(createInfoLabel("Tema: ", conferencia.getTema()));
+        textPanel.add(createInfoLabel("Marca: ", conferencia.getMarca()));
+        textPanel.add(createInfoLabel("ID de Usuario: ", String.valueOf(conferencia.getIdUsuario())));
+        textPanel.add(createInfoLabel("Recursos: ", conferencia.getRecursos()));
+        textPanel.add(createInfoLabel("ID de Sala: ", String.valueOf(conferencia.getIdSala())));
+        textPanel.add(createInfoLabel("Disponibilidad: ", conferencia.getDisponibilidad() == 1 ? "Disponible" : "No disponible"));
+        textPanel.add(createInfoLabel("Cupos: ", String.valueOf(conferencia.getCupos())));
+
+        infoPanel.add(textPanel);
+
+        JOptionPane.showMessageDialog(this, infoPanel, "Información de la Conferencia", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    // Método para registrar al usuario en la conferencia
+    private JLabel createInfoLabel(String label, String value) {
+        JLabel lbl = new JLabel(label + value);
+        lbl.setFont(new Font("Arial", Font.PLAIN, 14));
+        lbl.setForeground(Color.BLACK); 
+        return lbl;
+    }
+
     private void unirseConferencia(int idConferencia) {
         ConferenciaDAO conferenciaDAO = new ConferenciaDAO();
         boolean exito = conferenciaDAO.registrarAsistencia(idUsuario, idConferencia);

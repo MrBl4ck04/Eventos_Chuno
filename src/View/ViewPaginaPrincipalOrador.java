@@ -1,6 +1,5 @@
 package View;
 
-import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Image;
 import javax.swing.JFrame;
@@ -67,7 +66,7 @@ public class ViewPaginaPrincipalOrador extends JFrame {
         btnUsuario.setBorderPainted(false); // Sin borde
         btnUsuario.setIcon(new ImageIcon(ViewPaginaPrincipalAsistente.class.getResource("/View/usuario (1).png")));
         btnUsuario.setBounds(593, 6, 44, 41);
-        setButtonIcon(btnUsuario, "/View/usuarioPrincipal.png");
+        setButtonIcon(btnUsuario, "/View/usuario (1).png");
         contentPane.add(btnUsuario);
 
         btnHistorial = new JButton("");
@@ -80,19 +79,19 @@ public class ViewPaginaPrincipalOrador extends JFrame {
         });
         btnHistorial.setIcon(new ImageIcon(ViewPaginaPrincipalOrador.class.getResource("/View/lista-de-verificacion.png")));
         btnHistorial.setBounds(50, 92, 134, 120);
-        setButtonIcon(btnHistorial, "/View/expediente.png");
+        setButtonIcon(btnHistorial, "/View/lista-de-verificacion.png");
         contentPane.add(btnHistorial);
 
         btnProximos = new JButton("");
         btnProximos.setIcon(new ImageIcon(ViewPaginaPrincipalOrador.class.getResource("/View/calendario.png")));
         btnProximos.setBounds(232, 92, 137, 120);
-        setButtonIcon(btnProximos, "/View/mas-reciente.png");
+        setButtonIcon(btnProximos, "/View/calendario.png");
         contentPane.add(btnProximos);
 
         btnNuevaReunion = new JButton("");
         btnNuevaReunion.setIcon(new ImageIcon(ViewPaginaPrincipalOrador.class.getResource("/View/agregar-archivo.png")));
         btnNuevaReunion.setBounds(427, 92, 118, 120);
-        setButtonIcon(btnNuevaReunion, "/View/mas.png");
+        setButtonIcon(btnNuevaReunion, "/View/agregar-archivo.png");
         contentPane.add(btnNuevaReunion);
 
         lblHistorial = new JLabel("Historial de Conferencias");
@@ -170,4 +169,3 @@ public class ViewPaginaPrincipalOrador extends JFrame {
         lblNuevaReunion.setBounds((int) (width * 0.7 - 20), (int) (height * 0.65), 121, 22);
     }
 }
-

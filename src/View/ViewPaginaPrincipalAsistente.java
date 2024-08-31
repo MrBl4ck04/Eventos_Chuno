@@ -1,6 +1,5 @@
 package View;
 
-import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Image;
 import javax.swing.JFrame;
@@ -66,19 +65,19 @@ public class ViewPaginaPrincipalAsistente extends JFrame {
         btnUsuario.setBorderPainted(false); // Sin borde
         btnUsuario.setIcon(new ImageIcon(ViewPaginaPrincipalAsistente.class.getResource("/View/usuario (1).png")));
         btnUsuario.setBounds(593, 6, 44, 41);
-        setButtonIcon(btnUsuario, "/View/usuarioPrincipal.png");
+        setButtonIcon(btnUsuario, "/View/usuario (1).png");
         contentPane.add(btnUsuario);
 
         btnHistorial = new JButton("");
         btnHistorial.setIcon(new ImageIcon(ViewPaginaPrincipalAsistente.class.getResource("/View/lista-de-verificacion.png")));
         btnHistorial.setBounds(57, 92, 134, 120);
-        setButtonIcon(btnHistorial, "/View/expediente.png");
+        setButtonIcon(btnHistorial, "/View/lista-de-verificacion.png");
         contentPane.add(btnHistorial);
 
         btnProximos = new JButton("");
         btnProximos.setIcon(new ImageIcon(ViewPaginaPrincipalAsistente.class.getResource("/View/calendario.png")));
         btnProximos.setBounds(234, 91, 143, 127);
-        setButtonIcon(btnProximos, "/View/mas-reciente.png");
+        setButtonIcon(btnProximos, "/View/calendario.png");
         contentPane.add(btnProximos);
 
         btnNuevaReunion = new JButton("");
@@ -86,7 +85,7 @@ public class ViewPaginaPrincipalAsistente extends JFrame {
         btnNuevaReunion.setBackground(new Color(255, 255, 255));
         btnNuevaReunion.setIcon(new ImageIcon(ViewPaginaPrincipalAsistente.class.getResource("/View/agregar-archivo.png")));
         btnNuevaReunion.setBounds(424, 91, 118, 127);
-        setButtonIcon(btnNuevaReunion, "/View/ingresarcon.png");
+        setButtonIcon(btnNuevaReunion, "/View/agregar-archivo.png");
         contentPane.add(btnNuevaReunion);
 
         lblHistorial = new JLabel("Historial de Conferencias");
