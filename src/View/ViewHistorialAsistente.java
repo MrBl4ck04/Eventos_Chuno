@@ -4,6 +4,8 @@ import controller.HistorialAsistencias;
 import javax.swing.*;
 import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 public class ViewHistorialAsistente extends JFrame {
@@ -32,19 +34,43 @@ public class ViewHistorialAsistente extends JFrame {
         };
         table.setForeground(new Color(64, 0, 128)); // Color de la fuente
         table.setFont(new Font("Tw Cen MT Condensed", Font.PLAIN, 15)); // Fuente
+        table.setBackground(Color.WHITE); // Establecer el fondo de la tabla a blanco
 
         // Establecer el encabezado de la tabla con la misma fuente y color
         JTableHeader header = table.getTableHeader();
         header.setForeground(new Color(64, 0, 128)); // Color de la fuente del encabezado
         header.setFont(new Font("Tw Cen MT Condensed", Font.PLAIN, 15)); // Fuente del encabezado
+        header.setBackground(Color.WHITE); // Establecer el fondo del encabezado a blanco
 
         JScrollPane scrollPane = new JScrollPane(table);
 
         // Crear un panel con borde superior y fondo con imagen
         JPanel panelWithPadding = new BackgroundPanel("/View/backHistorialA.png");
         panelWithPadding.setLayout(new BorderLayout());
-        panelWithPadding.setBorder(BorderFactory.createEmptyBorder(80, 15, 15, 15)); // Espacio: superior, izquierda, inferior, derecha
+        panelWithPadding.setBorder(BorderFactory.createEmptyBorder(50, 15, 30, 15)); 
         panelWithPadding.add(scrollPane, BorderLayout.CENTER);
+
+        // Crear el botón "Volver"
+        JButton volverButton = new JButton("Volver");
+        volverButton.setForeground(new Color(64, 0, 128)); 
+        volverButton.setFont(new Font("Tw Cen MT Condensed", Font.PLAIN, 15)); 
+        volverButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Cerrar la ventana actual
+                dispose();
+                // Abrir la vista principal (ViewPaginaPrincipalAsistente)
+                new ViewPaginaPrincipalAsistente(idUsuario).setVisible(true);
+            }
+        });
+
+        // Crear un panel superior para colocar el botón "Volver"
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setOpaque(false); // Hacer transparente el panel superior
+        topPanel.add(volverButton, BorderLayout.EAST); // Colocar el botón en la parte superior derecha
+
+        // Agregar el panel superior al panel principal
+        panelWithPadding.add(topPanel, BorderLayout.NORTH);
 
         getContentPane().add(panelWithPadding, BorderLayout.CENTER);
     }
