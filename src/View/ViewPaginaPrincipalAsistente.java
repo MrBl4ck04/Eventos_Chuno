@@ -16,7 +16,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.Color;
 
-
 public class ViewPaginaPrincipalAsistente extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
@@ -55,8 +54,8 @@ public class ViewPaginaPrincipalAsistente extends JFrame {
 
         btnUsuario = new JButton("");
         btnUsuario.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        	}
+            public void actionPerformed(ActionEvent e) {
+            }
         });
         btnUsuario.setFocusable(false);
         btnUsuario.setFocusTraversalKeysEnabled(false);
@@ -70,13 +69,13 @@ public class ViewPaginaPrincipalAsistente extends JFrame {
 
         btnHistorial = new JButton("");
         btnHistorial.setIcon(new ImageIcon(ViewPaginaPrincipalAsistente.class.getResource("/View/lista-de-verificacion.png")));
-        btnHistorial.setBounds(57, 92, 134, 120);
+        btnHistorial.setBounds(57, 81, 143, 131);
         setButtonIcon(btnHistorial, "/View/lista-de-verificacion.png");
         contentPane.add(btnHistorial);
 
         btnProximos = new JButton("");
         btnProximos.setIcon(new ImageIcon(ViewPaginaPrincipalAsistente.class.getResource("/View/calendario.png")));
-        btnProximos.setBounds(234, 91, 143, 127);
+        btnProximos.setBounds(234, 81, 153, 137);
         setButtonIcon(btnProximos, "/View/calendario.png");
         contentPane.add(btnProximos);
 
@@ -84,7 +83,7 @@ public class ViewPaginaPrincipalAsistente extends JFrame {
         btnNuevaReunion.setForeground(new Color(255, 255, 255));
         btnNuevaReunion.setBackground(new Color(255, 255, 255));
         btnNuevaReunion.setIcon(new ImageIcon(ViewPaginaPrincipalAsistente.class.getResource("/View/agregar-archivo.png")));
-        btnNuevaReunion.setBounds(424, 91, 118, 127);
+        btnNuevaReunion.setBounds(424, 81, 134, 137);
         setButtonIcon(btnNuevaReunion, "/View/agregar-archivo.png");
         contentPane.add(btnNuevaReunion);
 
@@ -105,7 +104,7 @@ public class ViewPaginaPrincipalAsistente extends JFrame {
         lblNuevaReunion.setHorizontalAlignment(SwingConstants.CENTER);
         lblNuevaReunion.setBounds(424, 223, 121, 22);
         contentPane.add(lblNuevaReunion);
-        
+
         JLabel lblAsistente = new JLabel("ASISTENTE");
         lblAsistente.setForeground(Color.WHITE);
         lblAsistente.setFont(new Font("Tw Cen MT Condensed", Font.BOLD, 30));
@@ -125,6 +124,15 @@ public class ViewPaginaPrincipalAsistente extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 ViewNuevaConferencia nuevaConferencia = new ViewNuevaConferencia(idUsuario);
                 nuevaConferencia.setVisible(true);
+                dispose(); // Cierra la ventana actual
+            }
+        });
+
+        // Acción para abrir la ventana de "Historial de Asistencias"
+        btnHistorial.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	ViewHistorialAsistente historialAsistencias = new ViewHistorialAsistente(idUsuario);
+                historialAsistencias.setVisible(true);
                 dispose(); // Cierra la ventana actual
             }
         });
