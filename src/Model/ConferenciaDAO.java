@@ -145,6 +145,45 @@ public class ConferenciaDAO {
         return conferencias;
     }
     
+ // Método para obtener las próximas conferencias a las que un asistente está registrado
+    public List<Conferencia> obtenerProximasConferenciasPorAsistente(int idUsuario) {
+        List<Conferencia> conferencias = new ArrayList<>();
+        String query = "SELECT c.* FROM conferencia c "
+                + "JOIN asistencia a ON c.id_conferencia = a.id_conferencia "
+                + "WHERE a.id_usuario = ? AND c.fecha_inicio > CURRENT_TIMESTAMP "
+                + "ORDER BY c.fecha_inicio ASC";
+
+        try (Connection conn = conexionBD.getConexion();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, idUsuario);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Conferencia conferencia = new Conferencia(
+                        rs.getInt("id_conferencia"),
+                        rs.getString("titulo"),
+                        rs.getString("descripcion"),
+                        rs.getString("fecha_inicio"),
+                        rs.getString("fecha_fin"),
+                        rs.getString("tema"),
+                        rs.getString("marca"),
+                        rs.getInt("id_usuario"),
+                        rs.getString("recursos"),
+                        rs.getInt("id_sala"),
+                        rs.getInt("disponibilidad"),
+                        rs.getInt("cupos")
+                );
+                conferencias.add(conferencia);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al obtener las próximas conferencias para el asistente: " + e.getMessage());
+        }
+
+        return conferencias;
+    }
+    
     public List<Conferencia> obtenerConferenciasPorOrador(int idUsuario) {
         List<Conferencia> conferencias = new ArrayList<>();
         String query = "SELECT * FROM conferencia WHERE id_usuario = ?";

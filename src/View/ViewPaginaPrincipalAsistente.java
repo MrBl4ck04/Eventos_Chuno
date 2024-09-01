@@ -23,7 +23,7 @@ public class ViewPaginaPrincipalAsistente extends JFrame {
     private JButton btnNotificacion;
     private JButton btnUsuario;
     private JButton btnHistorial;
-    private JButton btnProximos;
+    private JButton btnProximasConferencias;
     private JButton btnNuevaReunion;
 
     private JLabel lblHistorial;
@@ -73,11 +73,11 @@ public class ViewPaginaPrincipalAsistente extends JFrame {
         setButtonIcon(btnHistorial, "/View/lista-de-verificacion.png");
         contentPane.add(btnHistorial);
 
-        btnProximos = new JButton("");
-        btnProximos.setIcon(new ImageIcon(ViewPaginaPrincipalAsistente.class.getResource("/View/calendario.png")));
-        btnProximos.setBounds(234, 81, 153, 137);
-        setButtonIcon(btnProximos, "/View/calendario.png");
-        contentPane.add(btnProximos);
+        btnProximasConferencias = new JButton("");
+        btnProximasConferencias.setIcon(new ImageIcon(ViewPaginaPrincipalAsistente.class.getResource("/View/calendario.png")));
+        btnProximasConferencias.setBounds(234, 81, 153, 137);
+        setButtonIcon(btnProximasConferencias, "/View/calendario.png");
+        contentPane.add(btnProximasConferencias);
 
         btnNuevaReunion = new JButton("");
         btnNuevaReunion.setForeground(new Color(255, 255, 255));
@@ -127,6 +127,14 @@ public class ViewPaginaPrincipalAsistente extends JFrame {
                 dispose(); // Cierra la ventana actual
             }
         });
+        
+        btnProximasConferencias.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ViewProximosAsistente viewp = new ViewProximosAsistente(idUsuario);
+                viewp.setVisible(true);
+                dispose();
+            }
+        });
 
         // Acción para abrir la ventana de "Historial de Asistencias"
         btnHistorial.addActionListener(new ActionListener() {
@@ -156,7 +164,7 @@ public class ViewPaginaPrincipalAsistente extends JFrame {
         btnUsuario.setBounds(width - 85, 6, 44, 41);
 
         btnHistorial.setBounds((int) (width * 0.1), (int) (height * 0.3), 118, 105);
-        btnProximos.setBounds((int) (width * 0.4), (int) (height * 0.3), 118, 105);
+        btnProximasConferencias.setBounds((int) (width * 0.4), (int) (height * 0.3), 118, 105);
         btnNuevaReunion.setBounds((int) (width * 0.7), (int) (height * 0.3), 118, 105);
 
         lblHistorial.setBounds((int) (width * 0.1 - 20), (int) (height * 0.65), 143, 22);
