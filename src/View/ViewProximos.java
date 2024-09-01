@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import Model.Conferencia;
 import Model.ConferenciaDAO;
+import Model.Sesion;
 
 public class ViewProximos extends JFrame {
 
@@ -30,7 +31,7 @@ public class ViewProximos extends JFrame {
 
         // Envolver cardsPanel en un JScrollPane
         JScrollPane scrollPane = new JScrollPane(cardsPanel);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); // Scroll vertical siempre visible
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
         contentPane.add(scrollPane, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
@@ -66,7 +67,7 @@ public class ViewProximos extends JFrame {
             BackgroundPanel cardPanel = new BackgroundPanel("/View/backTarjetas.png");
             cardPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             cardPanel.setLayout(new BoxLayout(cardPanel, BoxLayout.Y_AXIS));
-            cardPanel.setBorder(new EmptyBorder(10, 10, 10, 10));  // Añadir margen interno
+            cardPanel.setBorder(new EmptyBorder(10, 10, 10, 10)); 
 
             Font cardFont = new Font("Tw Cen MT Condensed", Font.BOLD, 16);
 
@@ -90,6 +91,31 @@ public class ViewProximos extends JFrame {
             cardPanel.add(lblFecha);
             cardPanel.add(lblTema);
             cardPanel.add(lblMarca);
+
+            // Agregar botón de sesiones si existen
+            List<Sesion> sesiones = conferenciaDAO.obtenerSesionesPorConferencia(conferencia.getIdConferencia());
+            if (!sesiones.isEmpty()) {
+                JButton btnSesiones = new JButton("Ver Sesiones");
+                btnSesiones.setFont(cardFont);
+                btnSesiones.setBackground(new Color(64, 0, 128));
+                btnSesiones.setForeground(Color.WHITE);
+
+                btnSesiones.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        StringBuilder sesionesInfo = new StringBuilder();
+                        for (Sesion sesion : sesiones) {
+                            sesionesInfo.append("Sesión ID: ").append(sesion.getIdSesion())
+                                        .append(", Fecha: ").append(sesion.getFecha())
+                                        .append(", Inicio: ").append(sesion.getHoraInicio())
+                                        .append(", Fin: ").append(sesion.getHoraFin())
+                                        .append("\n");
+                        }
+                        JOptionPane.showMessageDialog(ViewProximos.this, sesionesInfo.toString(), "Sesiones", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                });
+
+                cardPanel.add(btnSesiones);
+            }
 
             cardsPanel.add(cardPanel);
         }
