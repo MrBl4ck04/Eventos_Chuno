@@ -15,33 +15,6 @@ public class HistorialAsistencias {
     public HistorialAsistencias() {
         conexion = new ConexionBD();
     }
-    
-    public void actualizarEstadoAsistencias() {
-        Connection conn = null;
-        PreparedStatement pst = null;
-
-        try {
-            conn = conexion.getConexion();
-            String sql = "UPDATE asistencia a "
-                       + "SET estado = 'Asistido' "
-                       + "FROM conferencia c "
-                       + "WHERE a.id_conferencia = c.id_conferencia "
-                       + "AND c.fecha_fin < CURRENT_TIMESTAMP "
-                       + "AND a.estado != 'Asistido';";
-            pst = conn.prepareStatement(sql);
-            pst.executeUpdate();
-
-        } catch (SQLException e) {
-            System.err.println("Error al actualizar estado de asistencias: " + e.getMessage());
-        } finally {
-            try {
-                if (pst != null) pst.close();
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                System.err.println("Error al cerrar conexión: " + e.getMessage());
-            }
-        }
-    }
 
     public List<String[]> obtenerHistorial(int idUsuario) {
         Connection conn = null;
@@ -54,7 +27,7 @@ public class HistorialAsistencias {
             String sql = "SELECT c.titulo, c.descripcion, c.fecha_inicio, c.fecha_fin, c.tema, c.marca "
                        + "FROM asistencia a "
                        + "JOIN conferencia c ON a.id_conferencia = c.id_conferencia "
-                       + "WHERE a.id_usuario = ? AND a.estado = 'Asistido' AND c.fecha_fin < CURRENT_TIMESTAMP;";
+                       + "WHERE a.id_usuario = ? AND c.fecha_fin < CURRENT_TIMESTAMP;";
             pst = conn.prepareStatement(sql);
             pst.setInt(1, idUsuario);
             rs = pst.executeQuery();
