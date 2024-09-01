@@ -129,7 +129,7 @@ public class ViewPaginaPrincipalOrador extends JFrame {
         btnProximos.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ViewProximos viewp = new ViewProximos();
+                ViewProximos viewp = new ViewProximos(idUsuario);
                 viewp.setVisible(true);
             }
         });

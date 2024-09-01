@@ -108,5 +108,41 @@ public class ConferenciaDAO {
         }
         return sesiones;
     }
+    
+ // Método para obtener las próximas conferencias de un orador específico
+    public List<Conferencia> obtenerProximasConferenciasPorOrador(int idUsuario) {
+        List<Conferencia> conferencias = new ArrayList<>();
+        String query = "SELECT * FROM conferencia WHERE id_usuario = ? AND fecha_inicio > CURRENT_TIMESTAMP";
+
+        try (Connection conn = conexionBD.getConexion();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, idUsuario);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Conferencia conferencia = new Conferencia(
+                        rs.getInt("id_conferencia"),
+                        rs.getString("titulo"),
+                        rs.getString("descripcion"),
+                        rs.getString("fecha_inicio"),
+                        rs.getString("fecha_fin"),
+                        rs.getString("tema"),
+                        rs.getString("marca"),
+                        rs.getInt("id_usuario"),
+                        rs.getString("recursos"),
+                        rs.getInt("id_sala"),
+                        rs.getInt("disponibilidad"),
+                        rs.getInt("cupos")
+                );
+                conferencias.add(conferencia);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al obtener las próximas conferencias para el orador: " + e.getMessage());
+        }
+
+        return conferencias;
+    }
 }
 
