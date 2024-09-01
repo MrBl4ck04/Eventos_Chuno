@@ -67,4 +67,23 @@ public class ConferenciaDAO {
             return false;
         }
     }
+    
+    //Método para eliminar conferencia de la bdd (ORADOR)
+    public boolean eliminarConferencia(int idConferencia) {
+        String query = "DELETE FROM conferencia WHERE id_conferencia = ?";
+
+        try (Connection conn = conexionBD.getConexion();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, idConferencia);
+
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Error al eliminar la conferencia: " + e.getMessage());
+            return false;
+        }
+    }
 }
+

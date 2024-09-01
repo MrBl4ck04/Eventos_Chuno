@@ -42,6 +42,11 @@ public class ViewHistorialOrador extends JFrame {
         cardsPanel.setBackground(new Color(64, 0, 128));
         cardsPanel.setLayout(new GridLayout(0, 1, 10, 10));
         contentPane.add(cardsPanel, BorderLayout.CENTER); 
+        
+        JScrollPane scrollPane = new JScrollPane(cardsPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        contentPane.add(scrollPane, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setBackground(new Color(64, 0, 128));
@@ -94,12 +99,45 @@ public class ViewHistorialOrador extends JFrame {
 
             JLabel lblMarca = new JLabel("Marcas: " + conferencia.getMarca());
             lblMarca.setFont(cardFont);
+            
+            JButton btnEliminar = new JButton("Eliminar");
+            btnEliminar.setFont(cardFont);
+            btnEliminar.setBackground(new Color(64, 0, 128));
+            btnEliminar.setForeground(Color.WHITE);
+        
+            btnEliminar.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    int respuesta = JOptionPane.showOptionDialog(
+                        ViewHistorialOrador.this,
+                        "¿Estás seguro de que quieres eliminar esta conferencia?",
+                        "Confirmar eliminación",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        new Object[] {"Sí", "No"},
+                        "No"
+                    );
+
+                    if (respuesta == 0) { // 0 es si
+                        if (conferenciaDAO.eliminarConferencia(conferencia.getIdConferencia())) {
+                            JOptionPane.showMessageDialog(ViewHistorialOrador.this, "Conferencia eliminada exitosamente.");
+                            cardsPanel.remove(cardPanel);
+                            cardsPanel.revalidate();
+                            cardsPanel.repaint();
+                        } else {
+                            JOptionPane.showMessageDialog(ViewHistorialOrador.this, "Error al eliminar la conferencia.");
+                        }
+                    }
+                }
+            });
+
 
             cardPanel.add(lblTitulo);
             cardPanel.add(lblDescripcion);
             cardPanel.add(lblFecha);
             cardPanel.add(lblTema);
             cardPanel.add(lblMarca);
+            cardPanel.add(btnEliminar);
 
             cardsPanel.add(cardPanel);
         }
