@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import Model.Conferencia;
 import Model.ConferenciaDAO;
+import Model.Sesion;
 
 public class ViewHistorialOrador extends JFrame {
 
@@ -81,7 +82,7 @@ public class ViewHistorialOrador extends JFrame {
             BackgroundPanel cardPanel = new BackgroundPanel("/View/backTarjetas.png");
             cardPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             cardPanel.setLayout(new BoxLayout(cardPanel, BoxLayout.Y_AXIS));
-            cardPanel.setBorder(new EmptyBorder(10, 10, 10, 10));  // Añadir margen interno
+            cardPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
             Font cardFont = new Font("Tw Cen MT Condensed", Font.BOLD, 16);
 
@@ -99,12 +100,12 @@ public class ViewHistorialOrador extends JFrame {
 
             JLabel lblMarca = new JLabel("Marcas: " + conferencia.getMarca());
             lblMarca.setFont(cardFont);
-            
+
             JButton btnEliminar = new JButton("Eliminar");
             btnEliminar.setFont(cardFont);
             btnEliminar.setBackground(new Color(64, 0, 128));
             btnEliminar.setForeground(Color.WHITE);
-        
+
             btnEliminar.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     int respuesta = JOptionPane.showOptionDialog(
@@ -118,7 +119,7 @@ public class ViewHistorialOrador extends JFrame {
                         "No"
                     );
 
-                    if (respuesta == 0) { // 0 es si
+                    if (respuesta == 0) {
                         if (conferenciaDAO.eliminarConferencia(conferencia.getIdConferencia())) {
                             JOptionPane.showMessageDialog(ViewHistorialOrador.this, "Conferencia eliminada exitosamente.");
                             cardsPanel.remove(cardPanel);
@@ -131,6 +132,30 @@ public class ViewHistorialOrador extends JFrame {
                 }
             });
 
+            // Agregar botón de sesiones si existen
+            List<Sesion> sesiones = conferenciaDAO.obtenerSesionesPorConferencia(conferencia.getIdConferencia());
+            if (!sesiones.isEmpty()) {
+                JButton btnSesiones = new JButton("Ver Sesiones");
+                btnSesiones.setFont(cardFont);
+                btnSesiones.setBackground(new Color(64, 0, 128));
+                btnSesiones.setForeground(Color.WHITE);
+
+                btnSesiones.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        StringBuilder sesionesInfo = new StringBuilder();
+                        for (Sesion sesion : sesiones) {
+                            sesionesInfo.append("Sesión ID: ").append(sesion.getIdSesion())
+                                        .append(", Fecha: ").append(sesion.getFecha())
+                                        .append(", Inicio: ").append(sesion.getHoraInicio())
+                                        .append(", Fin: ").append(sesion.getHoraFin())
+                                        .append("\n");
+                        }
+                        JOptionPane.showMessageDialog(ViewHistorialOrador.this, sesionesInfo.toString(), "Sesiones", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                });
+
+                cardPanel.add(btnSesiones);
+            }
 
             cardPanel.add(lblTitulo);
             cardPanel.add(lblDescripcion);
@@ -145,6 +170,8 @@ public class ViewHistorialOrador extends JFrame {
         contentPane.revalidate();
         contentPane.repaint();
     }
+    
+    
 
     private class BackgroundPanel extends JPanel {
         private Image backgroundImage;

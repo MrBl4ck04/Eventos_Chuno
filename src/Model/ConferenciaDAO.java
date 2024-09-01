@@ -85,5 +85,28 @@ public class ConferenciaDAO {
             return false;
         }
     }
+    
+    public List<Sesion> obtenerSesionesPorConferencia(int idConferencia) {
+        List<Sesion> sesiones = new ArrayList<>();
+        try (Connection con = conexionBD.getConexion()) {
+            String sql = "SELECT * FROM sesion WHERE id_conferencia = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, idConferencia);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Sesion sesion = new Sesion();
+                sesion.setIdSesion(rs.getInt("id_sesion"));
+                sesion.setIdConferencia(rs.getInt("id_conferencia"));
+                sesion.setFecha(rs.getDate("fecha"));
+                sesion.setHoraInicio(rs.getTime("hora_inicio"));
+                sesion.setHoraFin(rs.getTime("hora_fin"));
+                sesion.setIdSala(rs.getInt("id_sala"));
+                sesiones.add(sesion);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sesiones;
+    }
 }
 
