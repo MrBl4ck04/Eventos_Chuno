@@ -16,20 +16,20 @@ public class ViewHistorialOrador extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
 
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    ViewHistorialOrador frame = new ViewHistorialOrador();
-                    frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
+//    public static void main(String[] args) {
+//        EventQueue.invokeLater(new Runnable() {
+//            public void run() {
+//                try {
+//                    ViewHistorialOrador frame = new ViewHistorialOrador();
+//                    frame.setVisible(true);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//    }
 
-    public ViewHistorialOrador() {
+    public ViewHistorialOrador(int idUsuario) {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         setBounds(150, 150, 700, 600);  
@@ -65,7 +65,7 @@ public class ViewHistorialOrador extends JFrame {
         });
         buttonPanel.add(btnVolver);  
 
-        mostrarConferencias(cardsPanel);
+        mostrarConferencias(cardsPanel, idUsuario);
         
         JLabel lblNewLabel = new JLabel("Historial de conferencias");
         lblNewLabel.setBackground(new Color(255, 255, 255));
@@ -74,9 +74,9 @@ public class ViewHistorialOrador extends JFrame {
         contentPane.add(lblNewLabel, BorderLayout.NORTH);
     }
 
-    private void mostrarConferencias(JPanel cardsPanel) {
+    private void mostrarConferencias(JPanel cardsPanel, int idUsuario) {
         ConferenciaDAO conferenciaDAO = new ConferenciaDAO();
-        List<Conferencia> conferencias = conferenciaDAO.obtenerConferencias();
+        List<Conferencia> conferencias = conferenciaDAO.obtenerConferenciasPorOrador(idUsuario);
 
         for (Conferencia conferencia : conferencias) {
             BackgroundPanel cardPanel = new BackgroundPanel("/View/backTarjetas.png");

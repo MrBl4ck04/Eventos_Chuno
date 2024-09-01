@@ -144,5 +144,40 @@ public class ConferenciaDAO {
 
         return conferencias;
     }
+    
+    public List<Conferencia> obtenerConferenciasPorOrador(int idUsuario) {
+        List<Conferencia> conferencias = new ArrayList<>();
+        String query = "SELECT * FROM conferencia WHERE id_usuario = ?";
+
+        try (Connection conn = conexionBD.getConexion();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, idUsuario);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Conferencia conferencia = new Conferencia(
+                        rs.getInt("id_conferencia"),
+                        rs.getString("titulo"),
+                        rs.getString("descripcion"),
+                        rs.getString("fecha_inicio"),
+                        rs.getString("fecha_fin"),
+                        rs.getString("tema"),
+                        rs.getString("marca"),
+                        rs.getInt("id_usuario"),
+                        rs.getString("recursos"),
+                        rs.getInt("id_sala"),
+                        rs.getInt("disponibilidad"),
+                        rs.getInt("cupos")
+                );
+                conferencias.add(conferencia);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al obtener las conferencias para el orador: " + e.getMessage());
+        }
+
+        return conferencias;
+    }
 }
 

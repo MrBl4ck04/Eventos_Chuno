@@ -72,7 +72,7 @@ public class ViewPaginaPrincipalOrador extends JFrame {
         btnHistorial = new JButton("");
         btnHistorial.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-          		ViewHistorialOrador brh = new ViewHistorialOrador();
+          		ViewHistorialOrador brh = new ViewHistorialOrador(idUsuario);
                 brh.setVisible(true);
                 dispose(); // Cierra la ventana actual
         	}
