@@ -14,18 +14,18 @@ public class ViewNuevaConferencia extends JFrame {
     private JPanel panelConferencias;
     private JTextField txtBuscar;
     private int idUsuario;
-    private ConferenciaDAO conferenciaDAO;  // Declaración de conferenciaDAO
+    private ConferenciaDAO conferenciaDAO;
 
     public ViewNuevaConferencia(int idUsuario) {
         this.idUsuario = idUsuario;
-        this.conferenciaDAO = new ConferenciaDAO();  // Inicialización de conferenciaDAO
+        this.conferenciaDAO = new ConferenciaDAO();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 800, 600);
 
         // Crear el panel con imagen de fondo
         contentPane = new BackgroundPanel("/View/backNuevaC.png");
-        contentPane.setBorder(new EmptyBorder(10, 10, 10, 10)); // Ajustar los márgenes
+        contentPane.setBorder(new EmptyBorder(10, 10, 10, 10));
         contentPane.setLayout(new BorderLayout());
         setContentPane(contentPane);
 
@@ -48,17 +48,16 @@ public class ViewNuevaConferencia extends JFrame {
         panelConferencias = new JPanel();
         panelConferencias.setOpaque(false);
         panelConferencias.setLayout(new BoxLayout(panelConferencias, BoxLayout.Y_AXIS));
-        panelConferencias.setBorder(new EmptyBorder(50, 10, 10, 10)); // Añadir espacio superior
+        panelConferencias.setBorder(new EmptyBorder(50, 10, 10, 10));
 
         // Crear el JScrollPane y configurarlo
         JScrollPane scrollPane = new JScrollPane(panelConferencias);
         scrollPane.setOpaque(false);
-        scrollPane.getViewport().setOpaque(false); // Hacer el viewport transparente
-        scrollPane.setBorder(null); // Quitar el borde si lo deseas
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setBorder(null);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
-        // Añadir el JScrollPane al panel principal
         contentPane.add(scrollPane, BorderLayout.CENTER);
 
         // Botón "Volver" en el panel inferior
@@ -68,7 +67,7 @@ public class ViewNuevaConferencia extends JFrame {
         contentPane.add(panelInferior, BorderLayout.SOUTH);
 
         JButton btnVolver = new JButton("Volver");
-        btnVolver.setPreferredSize(new Dimension(100, 40)); // Tamaño opcional
+        btnVolver.setPreferredSize(new Dimension(100, 40));
         btnVolver.setFont(new Font("Arial", Font.PLAIN, 16));
         btnVolver.addActionListener(e -> {
             ViewPaginaPrincipalAsistente mainView = new ViewPaginaPrincipalAsistente(idUsuario);
@@ -78,7 +77,7 @@ public class ViewNuevaConferencia extends JFrame {
         panelInferior.add(btnVolver);
 
         // Cargar todas las conferencias inicialmente
-        cargarConferencias(conferenciaDAO.obtenerConferencias());  // Usando conferenciaDAO para cargar conferencias
+        cargarConferencias(conferenciaDAO.obtenerConferencias());
     }
 
     // Método para cargar conferencias en el panel
@@ -113,7 +112,7 @@ public class ViewNuevaConferencia extends JFrame {
         card.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         card.setBackground(new Color(255, 255, 255, 200)); // Fondo semi-transparente
         card.setLayout(new BorderLayout());
-        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 150)); // Altura fija y ancho expandible
+        card.setMaximumSize(new Dimension(Integer.MAX_VALUE, 150));
 
         // Título de la conferencia
         JLabel lblTitulo = new JLabel(conferencia.getTitulo());
@@ -141,7 +140,7 @@ public class ViewNuevaConferencia extends JFrame {
 
         buttonPanel.add(btnInfo);
         buttonPanel.add(btnUnirse);
-        buttonPanel.add(btnRecursos); // Añadir botón de recursos
+        buttonPanel.add(btnRecursos);
 
         card.add(buttonPanel, BorderLayout.SOUTH);
 
@@ -155,7 +154,7 @@ public class ViewNuevaConferencia extends JFrame {
 
         JPanel textPanel = new JPanel();
         textPanel.setOpaque(true);
-        textPanel.setBackground(new Color(255, 255, 255, 180)); // Fondo semi-transparente
+        textPanel.setBackground(new Color(255, 255, 255, 180));
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
         textPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
@@ -180,19 +179,35 @@ public class ViewNuevaConferencia extends JFrame {
     private JLabel createInfoLabel(String label, String value) {
         JLabel lbl = new JLabel(label + value);
         lbl.setFont(new Font("Arial", Font.PLAIN, 14));
-        lbl.setForeground(Color.BLACK); 
+        lbl.setForeground(Color.BLACK);
         lbl.setBorder(new EmptyBorder(5, 0, 5, 0));
         return lbl;
     }
 
     private void unirseConferencia(int idConferencia) {
-        boolean exito = conferenciaDAO.registrarAsistencia(idUsuario, idConferencia, 0); // 0 como valor inicial para voto
+        // Verificar si el usuario ya está registrado en la conferencia
+        boolean yaRegistrado = conferenciaDAO.isUsuarioRegistrado(idUsuario, idConferencia);
 
-        if (exito) {
-            JOptionPane.showMessageDialog(this, "Te has unido a la conferencia exitosamente.", "Unirse a Conferencia", JOptionPane.INFORMATION_MESSAGE);
+        if (yaRegistrado) {
+            // Mostrar mensaje de que ya está registrado
+            JOptionPane.showMessageDialog(this, "Ya registrado en esta conferencia.", "Registro Duplicado", JOptionPane.WARNING_MESSAGE);
         } else {
-            JOptionPane.showMessageDialog(this, "Hubo un error al unirse a la conferencia.", "Error", JOptionPane.ERROR_MESSAGE);
+            // Intentar registrar la asistencia si no está registrado
+            boolean exito = conferenciaDAO.registrarAsistencia(idUsuario, idConferencia, 0); // 0 como valor inicial para voto
+
+            if (exito) {
+                JOptionPane.showMessageDialog(this, "Te has unido a la conferencia exitosamente.", "Unirse a Conferencia", JOptionPane.INFORMATION_MESSAGE);
+                actualizarInformacionConferencias(); // Actualizar la información de las conferencias
+            } else {
+                JOptionPane.showMessageDialog(this, "Hubo un error al unirse a la conferencia.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
+    }
+
+    // Método para actualizar la lista de conferencias después de una modificación
+    private void actualizarInformacionConferencias() {
+        List<Conferencia> conferenciasActualizadas = conferenciaDAO.obtenerConferencias();
+        cargarConferencias(conferenciasActualizadas); // Recargar la interfaz con los datos actualizados
     }
 
     // Método para mostrar los recursos de la conferencia
