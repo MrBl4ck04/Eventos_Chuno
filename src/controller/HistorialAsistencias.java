@@ -83,5 +83,34 @@ public class HistorialAsistencias {
         }
         return historial;
     }
+    
+    //Función para eliminar conferencia en ASISTENTE
+    public void eliminarConferencia(int idUsuario, String titulo) {
+        Connection conn = null;
+        PreparedStatement pst = null;
+
+        try {
+            conn = conexion.getConexion();
+            String sql = "DELETE FROM asistencia "
+                       + "WHERE id_usuario = ? "
+                       + "AND id_conferencia = (SELECT id_conferencia FROM conferencia WHERE titulo = ?) "
+                       + "AND estado = 'Asistido';";
+            pst = conn.prepareStatement(sql);
+            pst.setInt(1, idUsuario);
+            pst.setString(2, titulo);
+            pst.executeUpdate();
+
+        } catch (SQLException e) {
+            System.err.println("Error al eliminar la conferencia: " + e.getMessage());
+        } finally {
+            try {
+                if (pst != null) pst.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
+            }
+        }
+    }
+
 
 }

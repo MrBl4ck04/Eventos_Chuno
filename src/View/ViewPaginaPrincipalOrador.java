@@ -72,7 +72,7 @@ public class ViewPaginaPrincipalOrador extends JFrame {
         btnHistorial = new JButton("");
         btnHistorial.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-          		ViewHistorialOrador brh = new ViewHistorialOrador();
+          		ViewHistorialOrador brh = new ViewHistorialOrador(idUsuario);
                 brh.setVisible(true);
                 dispose(); // Cierra la ventana actual
         	}
@@ -129,7 +129,7 @@ public class ViewPaginaPrincipalOrador extends JFrame {
         btnProximos.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ViewProximos viewp = new ViewProximos();
+                ViewProximos viewp = new ViewProximos(idUsuario);
                 viewp.setVisible(true);
             }
         });
