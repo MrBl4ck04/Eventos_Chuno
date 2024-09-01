@@ -15,7 +15,7 @@ public class ConferenciaDAO {
         this.conexionBD = new ConexionBD();
     }
 
-    // Método para obtener las conferencias desde la base de datos
+    // Método para obtener todas las conferencias desde la base de datos
     public List<Conferencia> obtenerConferencias() {
         List<Conferencia> conferencias = new ArrayList<>();
         String query = "SELECT * FROM conferencia";
@@ -49,15 +49,53 @@ public class ConferenciaDAO {
         return conferencias;
     }
 
+    // Nuevo método para buscar conferencias por título
+    public List<Conferencia> buscarConferenciasPorTitulo(String titulo) {
+        List<Conferencia> conferencias = new ArrayList<>();
+        String query = "SELECT * FROM conferencia WHERE titulo ILIKE ?";
+
+        try (Connection conn = conexionBD.getConexion();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, "%" + titulo + "%"); // Coincidencias parciales
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Conferencia conferencia = new Conferencia(
+                            rs.getInt("id_conferencia"),
+                            rs.getString("titulo"),
+                            rs.getString("descripcion"),
+                            rs.getString("fecha_inicio"),
+                            rs.getString("fecha_fin"),
+                            rs.getString("tema"),
+                            rs.getString("marca"),
+                            rs.getInt("id_usuario"),
+                            rs.getString("recursos"),
+                            rs.getInt("id_sala"),
+                            rs.getInt("disponibilidad"),
+                            rs.getInt("cupos")
+                    );
+                    conferencias.add(conferencia);
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al buscar las conferencias: " + e.getMessage());
+        }
+
+        return conferencias;
+    }
+
     // Método para registrar la asistencia a una conferencia
-    public boolean registrarAsistencia(int idUsuario, int idConferencia) {
-        String query = "INSERT INTO asistencia (id_usuario, id_conferencia, estado) VALUES (?, ?, 'Registrado')";
+    public boolean registrarAsistencia(int idUsuario, int idConferencia, int voto) {
+        String query = "INSERT INTO asistencia (id_usuario, id_conferencia, voto, estado) VALUES (?, ?, ?, 'Registrado')";
 
         try (Connection conn = conexionBD.getConexion();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
             pstmt.setInt(1, idUsuario);
             pstmt.setInt(2, idConferencia);
+            pstmt.setInt(3, voto); // Valor inicial para voto, en este caso 0
 
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
