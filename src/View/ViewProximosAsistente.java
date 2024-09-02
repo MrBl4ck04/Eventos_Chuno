@@ -9,6 +9,11 @@ import java.awt.event.ActionEvent;
 import Model.Conferencia;
 import Model.ConferenciaDAO;
 import Model.Sesion;
+import Model.ConexionBD;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class ViewProximosAsistente extends JFrame {
 
@@ -69,7 +74,7 @@ public class ViewProximosAsistente extends JFrame {
 
             Font cardFont = new Font("Tw Cen MT Condensed", Font.BOLD, 16);
 
-            JLabel lblTitulo = new JLabel("Titulo: " + conferencia.getTitulo());
+            JLabel lblTitulo = new JLabel("Título: " + conferencia.getTitulo());
             lblTitulo.setFont(cardFont);
 
             JLabel lblDescripcion = new JLabel("Descripción: " + conferencia.getDescripcion());
@@ -81,7 +86,7 @@ public class ViewProximosAsistente extends JFrame {
             JLabel lblTema = new JLabel("Tema: " + conferencia.getTema());
             lblTema.setFont(cardFont);
 
-            JLabel lblMarca = new JLabel("Marcas: " + conferencia.getMarca());
+            JLabel lblMarca = new JLabel("Marca: " + conferencia.getMarca());
             lblMarca.setFont(cardFont);
 
             cardPanel.add(lblTitulo);
@@ -90,9 +95,16 @@ public class ViewProximosAsistente extends JFrame {
             cardPanel.add(lblTema);
             cardPanel.add(lblMarca);
 
-            // Agregar botón de sesiones si existen
+            // Verificar si existen sesiones
             List<Sesion> sesiones = conferenciaDAO.obtenerSesionesPorConferencia(conferencia.getIdConferencia());
-            if (!sesiones.isEmpty()) {
+            if (sesiones.isEmpty()) {
+                // Mostrar la sala solo si no hay sesiones
+                String numeroSala = obtenerNumeroSala(conferencia.getIdSala());
+                JLabel lblSala = new JLabel("Sala: " + (numeroSala != null ? numeroSala : "Por asignar"));
+                lblSala.setFont(cardFont);
+                cardPanel.add(lblSala);
+            } else {
+                // Agregar botón de sesiones si existen
                 JButton btnSesiones = new JButton("Ver Sesiones");
                 btnSesiones.setFont(cardFont);
                 btnSesiones.setBackground(new Color(64, 0, 128));
@@ -100,15 +112,7 @@ public class ViewProximosAsistente extends JFrame {
 
                 btnSesiones.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        StringBuilder sesionesInfo = new StringBuilder();
-                        for (Sesion sesion : sesiones) {
-                            sesionesInfo.append("Sesión ID: ").append(sesion.getIdSesion())
-                                        .append(", Fecha: ").append(sesion.getFecha())
-                                        .append(", Inicio: ").append(sesion.getHoraInicio())
-                                        .append(", Fin: ").append(sesion.getHoraFin())
-                                        .append("\n");
-                        }
-                        JOptionPane.showMessageDialog(ViewProximosAsistente.this, sesionesInfo.toString(), "Sesiones", JOptionPane.INFORMATION_MESSAGE);
+                        mostrarSesionesDialog(sesiones);
                     }
                 });
 
@@ -120,6 +124,59 @@ public class ViewProximosAsistente extends JFrame {
 
         contentPane.revalidate();
         contentPane.repaint();
+    }
+
+    private void mostrarSesionesDialog(List<Sesion> sesiones) {
+        JPanel panelSesiones = new JPanel();
+        panelSesiones.setLayout(new BoxLayout(panelSesiones, BoxLayout.Y_AXIS));
+
+        for (Sesion sesion : sesiones) {
+            JPanel sesionPanel = new JPanel();
+            sesionPanel.setLayout(new GridLayout(0, 1));
+            sesionPanel.setBorder(BorderFactory.createTitledBorder("Sesión ID: " + sesion.getIdSesion()));
+
+            JLabel lblFecha = new JLabel("Fecha: " + sesion.getFecha());
+            JLabel lblHoraInicio = new JLabel("Hora de Inicio: " + sesion.getHoraInicio());
+            JLabel lblHoraFin = new JLabel("Hora de Fin: " + sesion.getHoraFin());
+
+            // Obtener información del número de la sala
+            String numeroSala = obtenerNumeroSala(sesion.getIdSala());
+            JLabel lblSala = new JLabel("Sala: " + (numeroSala != null ? numeroSala : "Por asignar"));
+
+            sesionPanel.add(lblFecha);
+            sesionPanel.add(lblHoraInicio);
+            sesionPanel.add(lblHoraFin);
+            sesionPanel.add(lblSala);
+
+            panelSesiones.add(sesionPanel);
+        }
+
+        JScrollPane scrollPane = new JScrollPane(panelSesiones);
+        scrollPane.setPreferredSize(new Dimension(500, 300));
+
+        JOptionPane.showMessageDialog(this, scrollPane, "Sesiones", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private String obtenerNumeroSala(int idSala) {
+        if (idSala == 0) {
+            return null;
+        }
+        String numeroSala = null;
+        String query = "SELECT numero FROM sala WHERE id_sala = ?";
+        try (Connection conn = new ConexionBD().getConexion();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+             
+            pstmt.setInt(1, idSala); // Establecer el valor del parámetro antes de ejecutar la consulta
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    numeroSala = rs.getString("numero"); // Obtener el número de la sala
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener el número de la sala: " + e.getMessage());
+        }
+        return numeroSala;
     }
 
     private class BackgroundPanel extends JPanel {
