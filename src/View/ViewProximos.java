@@ -6,9 +6,11 @@ import java.awt.*;
 import java.util.List;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.sql.Timestamp;
 import Model.Conferencia;
 import Model.ConferenciaDAO;
 import Model.Sesion;
+import controller.sesiones;
 
 public class ViewProximos extends JFrame {
 
@@ -29,7 +31,6 @@ public class ViewProximos extends JFrame {
         cardsPanel.setBackground(new Color(64, 0, 128));
         cardsPanel.setLayout(new GridLayout(0, 1, 10, 10));
 
-        // Envolver cardsPanel en un JScrollPane
         JScrollPane scrollPane = new JScrollPane(cardsPanel);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS); 
         contentPane.add(scrollPane, BorderLayout.CENTER);
@@ -62,6 +63,7 @@ public class ViewProximos extends JFrame {
     private void mostrarProximasConferencias(JPanel cardsPanel, int idUsuario) {
         ConferenciaDAO conferenciaDAO = new ConferenciaDAO();
         List<Conferencia> conferencias = conferenciaDAO.obtenerProximasConferenciasPorOrador(idUsuario);
+        sesiones sesionController = new sesiones();
 
         for (Conferencia conferencia : conferencias) {
             BackgroundPanel cardPanel = new BackgroundPanel("/View/backTarjetas.png");
@@ -71,7 +73,7 @@ public class ViewProximos extends JFrame {
 
             Font cardFont = new Font("Tw Cen MT Condensed", Font.BOLD, 16);
 
-            JLabel lblTitulo = new JLabel("Titulo: " + conferencia.getTitulo());
+            JLabel lblTitulo = new JLabel("Título: " + conferencia.getTitulo());
             lblTitulo.setFont(cardFont);
 
             JLabel lblDescripcion = new JLabel("Descripción: " + conferencia.getDescripcion());
@@ -92,12 +94,20 @@ public class ViewProximos extends JFrame {
             cardPanel.add(lblTema);
             cardPanel.add(lblMarca);
 
+            // Mostrar la sala solo si no hay sesiones
+            List<Sesion> sesiones = conferenciaDAO.obtenerSesionesPorConferencia(conferencia.getIdConferencia());
+            if (sesiones.isEmpty()) {
+                String numeroSala = sesionController.obtenerNumeroSala(conferencia.getIdSala());
+                JLabel lblSala = new JLabel("Sala: " + (numeroSala != null ? numeroSala : "Por asignar"));
+                lblSala.setFont(cardFont);
+                cardPanel.add(lblSala);
+            }
+
             // Botón "Modificar"
             JButton btnModificar = new JButton("Modificar");
             btnModificar.setFont(cardFont);
             btnModificar.setBackground(new Color(0, 128, 0));  // Color verde
             btnModificar.setForeground(Color.WHITE);
-
             btnModificar.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     // Abrir un formulario de edición para modificar la conferencia
@@ -118,9 +128,20 @@ public class ViewProximos extends JFrame {
 
             cardPanel.add(btnModificar);
 
-            // Agregar botón de sesiones si existen
-            List<Sesion> sesiones = conferenciaDAO.obtenerSesionesPorConferencia(conferencia.getIdConferencia());
             if (!sesiones.isEmpty()) {
+                // Asignar automáticamente una sala si alguna sesión no tiene una
+                for (Sesion sesion : sesiones) {
+                    if (sesion.getIdSala() == 0) { // Verificar si la sesión no tiene sala asignada
+                        int cuposActuales = conferencia.getCupos();
+                        Timestamp fechaSesion = new Timestamp(sesion.getFecha().getTime());
+                        int idSalaAsignada = sesionController.encontrarSalaDisponibleParaSesion(
+                                cuposActuales, fechaSesion, sesion.getHoraInicio(), sesion.getHoraFin());
+                        if (idSalaAsignada != -1) {
+                            sesion.setIdSala(idSalaAsignada);
+                        }
+                    }
+                }
+
                 JButton btnSesiones = new JButton("Ver Sesiones");
                 btnSesiones.setFont(cardFont);
                 btnSesiones.setBackground(new Color(64, 0, 128));
@@ -134,6 +155,7 @@ public class ViewProximos extends JFrame {
                                         .append(", Fecha: ").append(sesion.getFecha())
                                         .append(", Inicio: ").append(sesion.getHoraInicio())
                                         .append(", Fin: ").append(sesion.getHoraFin())
+                                        .append(", Sala: ").append(sesion.getIdSala() != 0 ? sesion.getIdSala() : "Por asignar")
                                         .append("\n");
                         }
                         JOptionPane.showMessageDialog(ViewProximos.this, sesionesInfo.toString(), "Sesiones", JOptionPane.INFORMATION_MESSAGE);

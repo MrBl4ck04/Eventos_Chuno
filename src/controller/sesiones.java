@@ -65,7 +65,7 @@ public class sesiones {
         }
     }
 
-    private int encontrarSalaDisponibleParaSesion(int cuposActuales, Timestamp fecha, Time horaInicio, Time horaFin) {
+    public int encontrarSalaDisponibleParaSesion(int cuposActuales, Timestamp fecha, Time horaInicio, Time horaFin) {
         String query = "SELECT id_sala FROM sala WHERE capacidad >= ? " +
                        "AND id_sala NOT IN (SELECT id_sala FROM sesion WHERE fecha = ? AND " +
                        "((hora_inicio <= ? AND hora_fin > ?) OR (hora_inicio < ? AND hora_fin >= ?) OR (hora_inicio >= ? AND hora_fin <= ?))) " +
@@ -109,5 +109,27 @@ public class sesiones {
             e.printStackTrace();
         }
         return 0; // Retorna 0 si no se encuentra el cupo
+    }
+
+    public String obtenerNumeroSala(int idSala) {
+        if (idSala == 0) {
+            return null;
+        }
+        String numeroSala = null;
+        String query = "SELECT numero FROM sala WHERE id_sala = ?";
+        try (Connection conn = conexion.getConexion();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+             
+            pstmt.setInt(1, idSala); // Establecer el valor del parámetro antes de ejecutar la consulta
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    numeroSala = rs.getString("numero"); // Obtener el número de la sala
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener el número de la sala: " + e.getMessage());
+        }
+        return numeroSala;
     }
 }
