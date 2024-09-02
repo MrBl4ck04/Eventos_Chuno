@@ -35,8 +35,6 @@ public class ViewSesiones extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
     private JPanel panelSesiones;
-
-    // Variables para almacenar los datos de la conferencia
     private String titulo;
     private String descripcion;
     private Timestamp fechaInicio;

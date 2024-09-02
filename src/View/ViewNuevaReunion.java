@@ -95,7 +95,7 @@ public class ViewNuevaReunion extends JFrame {
 
         JPanel panelFechaInicio = new JPanel();
         panelFechaInicio.setLayout(new BoxLayout(panelFechaInicio, BoxLayout.X_AXIS));
-        panelFechaInicio.setOpaque(false);  // Hacer el panel transparente
+        panelFechaInicio.setOpaque(false);  
         JLabel lblFechaInicio = new JLabel("Fecha Inicio:");
         lblFechaInicio.setFont(new Font("Tahoma", Font.BOLD, 13));
         lblFechaInicio.setPreferredSize(new Dimension(100, 30));
