@@ -51,6 +51,15 @@ public class ViewPaginaPrincipalAsistente extends JFrame {
         btnNotificacion.setBounds(539, 6, 44, 41);
         setButtonIcon(btnNotificacion, "/View/notificacion.png");
         contentPane.add(btnNotificacion);
+        btnNotificacion.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Crear y mostrar la ventana de notificaciones
+                ViewNotificacion ventanaNotificaciones = new ViewNotificacion();
+                ventanaNotificaciones.setVisible(true);
+                dispose();
+            }
+        });
 
         btnUsuario = new JButton("");
         btnUsuario.addActionListener(new ActionListener() {
