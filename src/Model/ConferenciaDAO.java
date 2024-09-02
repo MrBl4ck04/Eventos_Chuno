@@ -209,6 +209,26 @@ public class ConferenciaDAO {
         return sesiones;
     }
     
+    public boolean guardarVoto(int idUsuario, String tituloConferencia, int voto) {
+        String query = "UPDATE asistencia SET voto = ? WHERE id_usuario = ? AND id_conferencia = (SELECT id_conferencia FROM conferencia WHERE titulo = ?)";
+
+        try (Connection conn = conexionBD.getConexion();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, voto);
+            pstmt.setInt(2, idUsuario);
+            pstmt.setString(3, tituloConferencia);
+
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Error al guardar el voto: " + e.getMessage());
+            return false;
+        }
+    }
+
+    
  // Método para obtener las próximas conferencias de un orador específico
     public List<Conferencia> obtenerProximasConferenciasPorOrador(int idUsuario) {
         List<Conferencia> conferencias = new ArrayList<>();

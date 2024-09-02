@@ -25,7 +25,7 @@ public class ViewNuevaConferencia extends JFrame {
 
         // Crear el panel con imagen de fondo
         contentPane = new BackgroundPanel("/View/backNuevaC.png");
-        contentPane.setBorder(new EmptyBorder(10, 10, 10, 10));
+        contentPane.setBorder(new EmptyBorder(60, 10, 10, 10)); // Incrementar el margen superior
         contentPane.setLayout(new BorderLayout());
         setContentPane(contentPane);
 
@@ -33,6 +33,7 @@ public class ViewNuevaConferencia extends JFrame {
         JPanel panelSuperior = new JPanel();
         panelSuperior.setOpaque(false);
         panelSuperior.setLayout(new FlowLayout(FlowLayout.LEFT));
+        panelSuperior.setBorder(new EmptyBorder(60, 0, 10, 0)); // Incrementar el margen superior para bajar más el campo de búsqueda
         contentPane.add(panelSuperior, BorderLayout.NORTH);
 
         txtBuscar = new JTextField();
@@ -48,7 +49,7 @@ public class ViewNuevaConferencia extends JFrame {
         panelConferencias = new JPanel();
         panelConferencias.setOpaque(false);
         panelConferencias.setLayout(new BoxLayout(panelConferencias, BoxLayout.Y_AXIS));
-        panelConferencias.setBorder(new EmptyBorder(50, 10, 10, 10));
+        panelConferencias.setBorder(new EmptyBorder(40, 10, 10, 10)); // Incrementar el margen superior para separar más las tarjetas
 
         // Crear el JScrollPane y configurarlo
         JScrollPane scrollPane = new JScrollPane(panelConferencias);

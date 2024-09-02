@@ -1,6 +1,8 @@
 package controller;
 
 import Model.ConexionBD;
+import Model.ConferenciaDAO;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -54,7 +56,7 @@ public class HistorialAsistencias {
             String sql = "SELECT c.titulo, c.descripcion, c.fecha_inicio, c.fecha_fin, c.tema, c.marca "
                        + "FROM asistencia a "
                        + "JOIN conferencia c ON a.id_conferencia = c.id_conferencia "
-                       + "WHERE a.id_usuario = ? AND a.estado = 'Asistido' AND c.fecha_fin < CURRENT_TIMESTAMP;";
+                       + "WHERE a.id_usuario = ? AND c.fecha_fin < CURRENT_TIMESTAMP;";
             pst = conn.prepareStatement(sql);
             pst.setInt(1, idUsuario);
             rs = pst.executeQuery();
@@ -83,6 +85,12 @@ public class HistorialAsistencias {
         }
         return historial;
     }
+    
+    public void guardarVoto(int idUsuario, String tituloConferencia, int voto) {
+        ConferenciaDAO conferenciaDAO = new ConferenciaDAO();
+        conferenciaDAO.guardarVoto(idUsuario, tituloConferencia, voto);
+    }
+
     
     //Función para eliminar conferencia en ASISTENTE
     public void eliminarConferencia(int idUsuario, String titulo) {
