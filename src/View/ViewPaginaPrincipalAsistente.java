@@ -57,7 +57,6 @@ public class ViewPaginaPrincipalAsistente extends JFrame {
                 // Crear y mostrar la ventana de notificaciones
                 ViewNotificacion ventanaNotificaciones = new ViewNotificacion();
                 ventanaNotificaciones.setVisible(true);
-                dispose();
             }
         });
 
