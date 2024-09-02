@@ -66,7 +66,7 @@ public class ViewSesiones extends JFrame {
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 600, 400);
-        contentPane = new BackgroundPanel("/View/backnewreu.jpg");
+        contentPane = new BackgroundPanel("/View/backnewreu.jpeg");
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(new BorderLayout(0, 0));

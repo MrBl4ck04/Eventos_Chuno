@@ -110,26 +110,4 @@ public class sesiones {
         }
         return 0; // Retorna 0 si no se encuentra el cupo
     }
-
-    private String obtenerNumeroSala(int idSala) {
-        if (idSala == 0) {
-            return null;
-        }
-        String numeroSala = null;
-        String query = "SELECT numero FROM sala WHERE id_sala = ?";
-        try (Connection conn = conexion.getConexion();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-             
-            pstmt.setInt(1, idSala); // Establecer el valor del parámetro antes de ejecutar la consulta
-
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    numeroSala = rs.getString("numero"); // Obtener el número de la sala
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al obtener el número de la sala: " + e.getMessage());
-        }
-        return numeroSala;
-    }
 }
