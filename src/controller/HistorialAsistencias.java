@@ -56,7 +56,7 @@ public class HistorialAsistencias {
             String sql = "SELECT c.titulo, c.descripcion, c.fecha_inicio, c.fecha_fin, c.tema, c.marca "
                        + "FROM asistencia a "
                        + "JOIN conferencia c ON a.id_conferencia = c.id_conferencia "
-                       + "WHERE a.id_usuario = ? AND a.estado = 'Asistido' AND c.fecha_fin < CURRENT_TIMESTAMP;";
+                       + "WHERE a.id_usuario = ? AND c.fecha_fin < CURRENT_TIMESTAMP;";
             pst = conn.prepareStatement(sql);
             pst.setInt(1, idUsuario);
             rs = pst.executeQuery();
