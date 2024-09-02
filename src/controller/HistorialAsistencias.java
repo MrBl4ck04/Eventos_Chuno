@@ -1,6 +1,8 @@
 package controller;
 
 import Model.ConexionBD;
+import Model.ConferenciaDAO;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -83,6 +85,12 @@ public class HistorialAsistencias {
         }
         return historial;
     }
+    
+    public void guardarVoto(int idUsuario, String tituloConferencia, int voto) {
+        ConferenciaDAO conferenciaDAO = new ConferenciaDAO();
+        conferenciaDAO.guardarVoto(idUsuario, tituloConferencia, voto);
+    }
+
     
     //Función para eliminar conferencia en ASISTENTE
     public void eliminarConferencia(int idUsuario, String titulo) {

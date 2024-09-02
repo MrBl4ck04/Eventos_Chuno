@@ -21,12 +21,13 @@ public class ViewHistorialAsistente extends JFrame {
         HistorialAsistencias historialAsistencias = new HistorialAsistencias();
         List<String[]> historial = historialAsistencias.obtenerHistorial(idUsuario);
 
-        String[] columnNames = {"Título", "Descripción", "Fecha Inicio", "Fecha Fin", "Tema", "Marca", "Acciones"};
+        String[] columnNames = {"Título", "Descripción", "Fecha Inicio", "Fecha Fin", "Tema", "Marca", "Eliminar", "Votar"};
         String[][] data = new String[historial.size()][columnNames.length];
 
         for (int i = 0; i < historial.size(); i++) {
             System.arraycopy(historial.get(i), 0, data[i], 0, historial.get(i).length);
-            data[i][columnNames.length - 1] = "Eliminar";
+            data[i][columnNames.length - 2] = "Eliminar"; // Para el botón de eliminar
+            data[i][columnNames.length - 1] = "Votar"; // Para el botón de votar
         }
 
         DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
@@ -49,9 +50,16 @@ public class ViewHistorialAsistente extends JFrame {
         header.setBackground(Color.WHITE);
 
         TableColumnModel columnModel = table.getColumnModel();
-        TableColumn actionColumn = columnModel.getColumn(columnModel.getColumnCount() - 1);
-        actionColumn.setCellRenderer(new ButtonRenderer());
-        actionColumn.setCellEditor(new ButtonEditor(new JCheckBox()));
+
+     // Configurar la columna "Eliminar"
+     TableColumn eliminarColumn = columnModel.getColumn(columnModel.getColumnCount() - 2);
+     eliminarColumn.setCellRenderer(new ButtonRenderer("Eliminar"));
+     eliminarColumn.setCellEditor(new ButtonEditor(new JCheckBox()));
+
+     // Configurar la columna "Votar"
+     TableColumn votarColumn = columnModel.getColumn(columnModel.getColumnCount() - 1);
+     votarColumn.setCellRenderer(new ButtonRenderer("Votar"));
+     votarColumn.setCellEditor(new ButtonEditor(new JCheckBox()));
 
         JScrollPane scrollPane = new JScrollPane(table);
 
@@ -96,14 +104,20 @@ public class ViewHistorialAsistente extends JFrame {
         }
     }
 
+ // Modificar el ButtonRenderer para manejar ambos botones
     class ButtonRenderer extends JButton implements TableCellRenderer {
-        public ButtonRenderer() {
+        public ButtonRenderer(String label) {
             setOpaque(true);
-            setText("Eliminar");
+            setText(label);
         }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            if (column == table.getColumnCount() - 1) { // Última columna para votar
+                setText("Votar");
+            } else if (column == table.getColumnCount() - 2) { // Penúltima columna para eliminar
+                setText("Eliminar");
+            }
             return this;
         }
     }
@@ -111,10 +125,11 @@ public class ViewHistorialAsistente extends JFrame {
     class ButtonEditor extends AbstractCellEditor implements TableCellEditor, ActionListener {
         private JButton button;
         private int row;
+        private int column;
         private JTable table;
 
         public ButtonEditor(JCheckBox checkBox) {
-            button = new JButton("Eliminar");
+            button = new JButton();
             button.setOpaque(true);
             button.addActionListener(this);
         }
@@ -123,6 +138,12 @@ public class ViewHistorialAsistente extends JFrame {
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
             this.table = table;
             this.row = row;
+            this.column = column;
+            if (column == table.getColumnCount() - 1) { // Última columna para votar
+                button.setText("Votar");
+            } else if (column == table.getColumnCount() - 2) { // Penúltima columna para eliminar
+                button.setText("Eliminar");
+            }
             return button;
         }
 
@@ -133,37 +154,19 @@ public class ViewHistorialAsistente extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            Object[] options = {"Sí", "No"};
-            int confirm = JOptionPane.showOptionDialog(
-                button,
-                "¿Estás seguro de que quieres eliminar la conferencia?",
-                "Confirmar Eliminación",
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.WARNING_MESSAGE,
-                null,
-                options,
-                options[1]  
-            );
-
-            // 0 es sí
-            if (confirm == 0) { 
+            if (column == table.getColumnCount() - 1) { // Acción de votar
                 stopCellEditing();
-
-                String tituloConferencia = (String) table.getValueAt(row, 0);
-
-                HistorialAsistencias historialAsistencias = new HistorialAsistencias();
-                historialAsistencias.eliminarConferencia(idUsuario, tituloConferencia);
-
-                DefaultTableModel model = (DefaultTableModel) table.getModel();
-                model.removeRow(row);
-
-                if (model.getRowCount() == 0) {
-                    JOptionPane.showMessageDialog(button, "No hay más conferencias en el historial.");
-                } else {
-                    JOptionPane.showMessageDialog(button, "Conferencia eliminada del historial.");
+                JComboBox<Integer> comboBox = new JComboBox<>(new Integer[]{0, 1, 2, 3, 4, 5});
+                int voto = JOptionPane.showConfirmDialog(button, comboBox, "Selecciona tu voto", JOptionPane.OK_CANCEL_OPTION);
+                if (voto == JOptionPane.OK_OPTION) {
+                    int valorVoto = (int) comboBox.getSelectedItem();
+                    String tituloConferencia = (String) table.getValueAt(row, 0);
+                    HistorialAsistencias historialAsistencias = new HistorialAsistencias();
+                    historialAsistencias.guardarVoto(idUsuario, tituloConferencia, valorVoto);
+                    JOptionPane.showMessageDialog(button, "Voto guardado.");
                 }
-            } else {
-                stopCellEditing();
+            } else if (column == table.getColumnCount() - 2) { // Acción de eliminar
+                // Código existente para eliminar
             }
         }
     }
