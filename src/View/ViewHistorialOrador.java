@@ -6,28 +6,18 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.List;
 import java.awt.event.ActionListener;
+import java.sql.Timestamp;
 import java.awt.event.ActionEvent;
 import Model.Conferencia;
 import Model.ConferenciaDAO;
 import Model.Sesion;
+import controller.sesiones;
 
 public class ViewHistorialOrador extends JFrame {
 
     private static final long serialVersionUID = 1L;
     private JPanel contentPane;
 
-//    public static void main(String[] args) {
-//        EventQueue.invokeLater(new Runnable() {
-//            public void run() {
-//                try {
-//                    ViewHistorialOrador frame = new ViewHistorialOrador();
-//                    frame.setVisible(true);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-//    }
 
     public ViewHistorialOrador(int idUsuario) {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -58,7 +48,7 @@ public class ViewHistorialOrador extends JFrame {
         btnVolver.setFont(new Font("Tw Cen MT Condensed", Font.PLAIN, 16));
         btnVolver.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                ViewPaginaPrincipalOrador brz = new ViewPaginaPrincipalOrador(getDefaultCloseOperation());
+                ViewPaginaPrincipalOrador brz = new ViewPaginaPrincipalOrador(idUsuario);
                 brz.setVisible(true);
                 dispose(); 
             }
@@ -75,8 +65,10 @@ public class ViewHistorialOrador extends JFrame {
     }
 
     private void mostrarConferencias(JPanel cardsPanel, int idUsuario) {
+    	
         ConferenciaDAO conferenciaDAO = new ConferenciaDAO();
         List<Conferencia> conferencias = conferenciaDAO.obtenerConferenciasPorOrador(idUsuario);
+        sesiones sesionController = new sesiones();
 
         for (Conferencia conferencia : conferencias) {
             BackgroundPanel cardPanel = new BackgroundPanel("/View/backTarjetas.png");
@@ -100,12 +92,28 @@ public class ViewHistorialOrador extends JFrame {
 
             JLabel lblMarca = new JLabel("Marcas: " + conferencia.getMarca());
             lblMarca.setFont(cardFont);
+            
+            cardPanel.add(lblTitulo);
+            cardPanel.add(lblDescripcion);
+            cardPanel.add(lblFecha);
+            cardPanel.add(lblTema);
+            cardPanel.add(lblMarca);
 
             JButton btnEliminar = new JButton("Eliminar");
             btnEliminar.setFont(cardFont);
             btnEliminar.setBackground(new Color(64, 0, 128));
             btnEliminar.setForeground(Color.WHITE);
+            
+            cardPanel.add(btnEliminar);
 
+            List<Sesion> sesiones = conferenciaDAO.obtenerSesionesPorConferencia(conferencia.getIdConferencia());
+            if (sesiones.isEmpty()) {
+                String numeroSala = sesionController.obtenerNumeroSala(conferencia.getIdSala());
+                JLabel lblSala = new JLabel("Sala: " + (numeroSala != null ? numeroSala : "Por asignar"));
+                lblSala.setFont(cardFont);
+                cardPanel.add(lblSala);
+            }
+            
             btnEliminar.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     int respuesta = JOptionPane.showOptionDialog(
@@ -133,8 +141,20 @@ public class ViewHistorialOrador extends JFrame {
             });
 
             // Agregar botón de sesiones si existen
-            List<Sesion> sesiones = conferenciaDAO.obtenerSesionesPorConferencia(conferencia.getIdConferencia());
             if (!sesiones.isEmpty()) {
+                // Asignar automáticamente una sala si alguna sesión no tiene una
+                for (Sesion sesion : sesiones) {
+                    if (sesion.getIdSala() == 0) { // Verificar si la sesión no tiene sala asignada
+                        int cuposActuales = conferencia.getCupos();
+                        Timestamp fechaSesion = new Timestamp(sesion.getFecha().getTime());
+                        int idSalaAsignada = sesionController.encontrarSalaDisponibleParaSesion(
+                                cuposActuales, fechaSesion, sesion.getHoraInicio(), sesion.getHoraFin());
+                        if (idSalaAsignada != -1) {
+                            sesion.setIdSala(idSalaAsignada);
+                        }
+                    }
+                }
+
                 JButton btnSesiones = new JButton("Ver Sesiones");
                 btnSesiones.setFont(cardFont);
                 btnSesiones.setBackground(new Color(64, 0, 128));
@@ -148,6 +168,7 @@ public class ViewHistorialOrador extends JFrame {
                                         .append(", Fecha: ").append(sesion.getFecha())
                                         .append(", Inicio: ").append(sesion.getHoraInicio())
                                         .append(", Fin: ").append(sesion.getHoraFin())
+                                        .append(", Sala: ").append(sesion.getIdSala() != 0 ? sesion.getIdSala() : "Por asignar")
                                         .append("\n");
                         }
                         JOptionPane.showMessageDialog(ViewHistorialOrador.this, sesionesInfo.toString(), "Sesiones", JOptionPane.INFORMATION_MESSAGE);
@@ -157,12 +178,7 @@ public class ViewHistorialOrador extends JFrame {
                 cardPanel.add(btnSesiones);
             }
 
-            cardPanel.add(lblTitulo);
-            cardPanel.add(lblDescripcion);
-            cardPanel.add(lblFecha);
-            cardPanel.add(lblTema);
-            cardPanel.add(lblMarca);
-            cardPanel.add(btnEliminar);
+            
 
             cardsPanel.add(cardPanel);
         }

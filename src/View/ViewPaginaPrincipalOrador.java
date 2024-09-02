@@ -131,6 +131,7 @@ public class ViewPaginaPrincipalOrador extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 ViewProximos viewp = new ViewProximos(idUsuario);
                 viewp.setVisible(true);
+                dispose();
             }
         });
 
