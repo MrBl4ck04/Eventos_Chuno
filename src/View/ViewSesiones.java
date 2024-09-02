@@ -2,6 +2,7 @@ package View;
 
 import controller.agregar;
 import controller.sesiones;
+import java.awt.FlowLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -25,6 +26,9 @@ import java.awt.Dimension;
 import java.sql.Timestamp;
 import java.sql.Connection;
 import java.sql.Time;
+import java.awt.Font;
+import java.awt.BorderLayout;
+import java.awt.Color;
 
 public class ViewSesiones extends JFrame {
 
@@ -50,7 +54,7 @@ public class ViewSesiones extends JFrame {
     private Connection connection;
 
     public ViewSesiones(Connection connection, String titulo, String descripcion, Timestamp fechaInicio, Timestamp fechaFin, 
-                        String tema, String marca, String recursos, String imagen, int usuarioId) {
+                        String tema, String marca, String recursos, String imagen, int usuarioId, int numSesiones) {
         this.connection = connection;
         this.titulo = titulo;
         this.descripcion = descripcion;
@@ -64,39 +68,58 @@ public class ViewSesiones extends JFrame {
 
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setBounds(100, 100, 600, 400);
-        contentPane = new JPanel();
+        contentPane = new BackgroundPanel("/View/backnewreu.jpg");
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        contentPane.setLayout(new BoxLayout(contentPane, BoxLayout.Y_AXIS));
         setContentPane(contentPane);
+        contentPane.setLayout(new BorderLayout(0, 0));
 
         // Panel contenedor de sesiones con scroll
         JScrollPane scrollPane = new JScrollPane();
         panelSesiones = new JPanel();
         panelSesiones.setLayout(new BoxLayout(panelSesiones, BoxLayout.Y_AXIS));
+        panelSesiones.setOpaque(false);
         scrollPane.setViewportView(panelSesiones);
         contentPane.add(scrollPane);
 
-        // Botón para agregar nuevas sesiones
-        JButton btnAgregarSesion = new JButton("Agregar Sesión");
-        btnAgregarSesion.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                agregarSesion();
-            }
-        });
-        contentPane.add(btnAgregarSesion);
+        // Panel para los botones en una sola fila
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.CENTER)); 
+        buttonPanel.setOpaque(false);
+        contentPane.add(buttonPanel, BorderLayout.SOUTH);
 
         // Botón para guardar las sesiones
         JButton btnGuardarSesiones = new JButton("Guardar Sesiones");
+        btnGuardarSesiones.setFont(new Font("Tahoma", Font.BOLD, 14));
+        btnGuardarSesiones.setForeground(new Color(250, 252, 206));
+        btnGuardarSesiones.setBackground(new Color(64,68,92));
         btnGuardarSesiones.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 guardarConferenciaYSesiones();
             }
         });
-        contentPane.add(btnGuardarSesiones);
+        buttonPanel.add(btnGuardarSesiones);
+
+        // Botón para cancelar la operación
+        JButton btnCancelar = new JButton("Cancelar");
+        btnCancelar.setFont(new Font("Tahoma", Font.BOLD, 14));
+        btnCancelar.setForeground(new Color(250, 252, 206));
+        btnCancelar.setBackground(new Color(64,68,92));
+        btnCancelar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose(); 
+            }
+        });
+        buttonPanel.add(btnCancelar);
+
+        // Automatically add the specified number of sessions
+        for (int i = 0; i < numSesiones; i++) {
+            agregarSesion();
+        }
     }
 
     /**
      * Método para agregar una nueva sesión (tarjeta).
+     * Nota: No se incluye el botón de eliminar.
      */
     private void agregarSesion() {
         JPanel panelSesion = new JPanel();
@@ -124,16 +147,6 @@ public class ViewSesiones extends JFrame {
         spinnerHoraFin.setEditor(new JSpinner.DateEditor(spinnerHoraFin, "HH:mm"));
         panelSesion.add(spinnerHoraFin);
 
-        // Botón para eliminar una sesión
-        JButton btnEliminarSesion = new JButton("Eliminar");
-        btnEliminarSesion.addActionListener(e -> {
-            panelSesiones.remove(panelSesion);
-            listaSesiones.remove(panelSesion);
-            panelSesiones.revalidate();
-            panelSesiones.repaint();
-        });
-        panelSesion.add(btnEliminarSesion);
-
         // Agregar el panel de la sesión a la lista y al contenedor principal
         listaSesiones.add(panelSesion);
         panelSesiones.add(panelSesion);
@@ -155,17 +168,14 @@ public class ViewSesiones extends JFrame {
                 Date horaInicio = (Date) spinnerHoraInicio.getValue();
                 Date horaFin = (Date) spinnerHoraFin.getValue();
 
-
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(fecha);
                 calendar.set(Calendar.HOUR_OF_DAY, horaInicio.getHours());
                 calendar.set(Calendar.MINUTE, horaInicio.getMinutes());
                 Timestamp timestampFecha = new Timestamp(calendar.getTimeInMillis());
 
- 
                 Time timeInicio = new Time(horaInicio.getTime());
                 Time timeFin = new Time(horaFin.getTime());
-
 
                 sesionesList.add(new Object[]{timestampFecha, timeInicio, timeFin});
             }
