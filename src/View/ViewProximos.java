@@ -67,7 +67,7 @@ public class ViewProximos extends JFrame {
             BackgroundPanel cardPanel = new BackgroundPanel("/View/backTarjetas.png");
             cardPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK));
             cardPanel.setLayout(new BoxLayout(cardPanel, BoxLayout.Y_AXIS));
-            cardPanel.setBorder(new EmptyBorder(10, 10, 10, 10)); 
+            cardPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
 
             Font cardFont = new Font("Tw Cen MT Condensed", Font.BOLD, 16);
 
@@ -91,6 +91,32 @@ public class ViewProximos extends JFrame {
             cardPanel.add(lblFecha);
             cardPanel.add(lblTema);
             cardPanel.add(lblMarca);
+
+            // Botón "Modificar"
+            JButton btnModificar = new JButton("Modificar");
+            btnModificar.setFont(cardFont);
+            btnModificar.setBackground(new Color(0, 128, 0));  // Color verde
+            btnModificar.setForeground(Color.WHITE);
+
+            btnModificar.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    // Abrir un formulario de edición para modificar la conferencia
+                    ViewEditarConferenciaForm editarForm = new ViewEditarConferenciaForm(conferencia);
+                    editarForm.setVisible(true);
+                    
+                    // Escuchar el evento de guardado en el formulario de edición
+                    editarForm.addWindowListener(new java.awt.event.WindowAdapter() {
+                        @Override
+                        public void windowClosed(java.awt.event.WindowEvent windowEvent) {
+                            // Recargar la vista de conferencias después de modificar
+                            cardsPanel.removeAll();
+                            mostrarProximasConferencias(cardsPanel, idUsuario);
+                        }
+                    });
+                }
+            });
+
+            cardPanel.add(btnModificar);
 
             // Agregar botón de sesiones si existen
             List<Sesion> sesiones = conferenciaDAO.obtenerSesionesPorConferencia(conferencia.getIdConferencia());

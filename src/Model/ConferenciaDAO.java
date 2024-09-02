@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -314,6 +317,45 @@ public class ConferenciaDAO {
         }
 
         return conferencias;
+    }
+    
+    public boolean actualizarConferencia(Conferencia conferencia) {
+        String sql = "UPDATE conferencia SET titulo = ?, descripcion = ?, fecha_inicio = ?, fecha_fin = ?, tema = ?, marca = ? WHERE id_conferencia = ?";
+
+        try (Connection conn = conexionBD.getConexion();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, conferencia.getTitulo());
+            pstmt.setString(2, conferencia.getDescripcion());
+
+            // Convertir las fechas de String a Timestamp
+            pstmt.setTimestamp(3, convertirStringATimestamp(conferencia.getFechaInicio()));
+            pstmt.setTimestamp(4, convertirStringATimestamp(conferencia.getFechaFin()));
+            
+            pstmt.setString(5, conferencia.getTema());
+            pstmt.setString(6, conferencia.getMarca());
+            pstmt.setInt(7, conferencia.getIdConferencia());
+
+            int affectedRows = pstmt.executeUpdate();
+            return affectedRows > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // Método para convertir String a Timestamp
+    private Timestamp convertirStringATimestamp(String fechaString) {
+        try {
+            // Suponiendo que el formato de tus fechas es "yyyy-MM-dd HH:mm:ss"
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            java.util.Date parsedDate = dateFormat.parse(fechaString);
+            return new Timestamp(parsedDate.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null; // O maneja el error de otra manera
+        }
     }
 }
 
